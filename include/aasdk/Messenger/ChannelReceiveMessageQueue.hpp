@@ -19,7 +19,7 @@
 
 #include <unordered_map>
 #include <queue>
-#include <aasdk/Messenger/Message.hpp>
+#include <Messenger/Message.hpp>
 
 
 namespace aasdk {

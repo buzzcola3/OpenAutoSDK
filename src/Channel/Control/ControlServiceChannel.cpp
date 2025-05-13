@@ -16,11 +16,11 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/endian/conversion.hpp>
-#include <aasdk/Version.hpp>
-#include <aasdk/IO/PromiseLink.hpp>
-#include <aasdk/Channel/Control/ControlServiceChannel.hpp>
-#include <aasdk/Channel/Control/IControlServiceChannelEventHandler.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Version.hpp>
+#include <IO/PromiseLink.hpp>
+#include <Channel/Control/ControlServiceChannel.hpp>
+#include <Channel/Control/IControlServiceChannelEventHandler.hpp>
+#include <Common/Log.hpp>
 
 
 namespace aasdk {

@@ -17,12 +17,12 @@
 
 #pragma once
 
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Transport/ITransport.hpp>
-#include <aasdk/Messenger/ICryptor.hpp>
-#include <aasdk/Messenger/IMessageOutStream.hpp>
-#include <aasdk/Messenger/FrameHeader.hpp>
-#include <aasdk/Messenger/FrameSize.hpp>
+#include <Common/Data.hpp>
+#include <Transport/ITransport.hpp>
+#include <Messenger/ICryptor.hpp>
+#include <Messenger/IMessageOutStream.hpp>
+#include <Messenger/FrameHeader.hpp>
+#include <Messenger/FrameSize.hpp>
 
 
 namespace aasdk {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Messenger/Message.hpp>
+#include <Error/Error.hpp>
+#include <Messenger/Message.hpp>
 
 
 namespace aasdk

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/Transport/TCPTransport.hpp>
+#include <Transport/TCPTransport.hpp>
 
 
 namespace aasdk {

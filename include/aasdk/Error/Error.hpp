@@ -19,7 +19,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <aasdk/Error/ErrorCode.hpp>
+#include <Error/ErrorCode.hpp>
 
 
 namespace aasdk {

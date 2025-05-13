@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <aasdk/Messenger/Message.hpp>
-#include <aasdk/IO/Promise.hpp>
+#include <Messenger/Message.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

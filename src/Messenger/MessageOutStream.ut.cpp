@@ -17,11 +17,11 @@
 */
 
 #include <gtest/gtest.h>
-#include <aasdk/Transport/UT/Transport.mock.hpp>
-#include <aasdk/Messenger/UT/Cryptor.mock.hpp>
-#include <aasdk/Messenger/UT/SendPromiseHandler.mock.hpp>
-#include <aasdk/Messenger/Promise.hpp>
-#include <aasdk/Messenger/MessageOutStream.hpp>
+#include <Transport/UT/Transport.mock.hpp>
+#include <Messenger/UT/Cryptor.mock.hpp>
+#include <Messenger/UT/SendPromiseHandler.mock.hpp>
+#include <Messenger/Promise.hpp>
+#include <Messenger/MessageOutStream.hpp>
 
 
 namespace aasdk

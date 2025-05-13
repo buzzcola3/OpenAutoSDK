@@ -20,8 +20,8 @@
 #include <functional>
 #include <boost/asio.hpp>
 #include <boost/core/noncopyable.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/IO/IOContextWrapper.hpp>
+#include <Error/Error.hpp>
+#include <IO/IOContextWrapper.hpp>
 
 
 namespace aasdk {

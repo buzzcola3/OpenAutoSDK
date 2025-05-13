@@ -20,9 +20,9 @@
 #include <boost/asio.hpp>
 #include <libusb.h>
 #include <list>
-#include <aasdk/USB/IUSBEndpoint.hpp>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/IAccessoryModeQuery.hpp>
+#include <USB/IUSBEndpoint.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/IAccessoryModeQuery.hpp>
 
 
 namespace aasdk {

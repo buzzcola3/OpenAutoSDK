@@ -19,9 +19,9 @@
 
 #include <memory>
 #include <functional>
-#include <aasdk/Messenger/ICryptor.hpp>
-#include <aasdk/Messenger/Message.hpp>
-#include <aasdk/Messenger/Promise.hpp>
+#include <Messenger/ICryptor.hpp>
+#include <Messenger/Message.hpp>
+#include <Messenger/Promise.hpp>
 
 
 namespace aasdk {

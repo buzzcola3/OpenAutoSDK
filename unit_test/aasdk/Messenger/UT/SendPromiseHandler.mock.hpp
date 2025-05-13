@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Error/Error.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/TCP/ITCPEndpoint.hpp>
+#include <TCP/ITCPEndpoint.hpp>
 
 
 namespace aasdk

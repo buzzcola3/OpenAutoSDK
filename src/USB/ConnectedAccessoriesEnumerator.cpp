@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
+#include <USB/ConnectedAccessoriesEnumerator.hpp>
 
 
 namespace aasdk {

@@ -21,7 +21,7 @@
 #include <aap_protobuf/service/navigationstatus/message/NavigationNextTurnDistanceEvent.pb.h>
 #include <aap_protobuf/service/navigationstatus/message/NavigationNextTurnEvent.pb.h>
 #include <aap_protobuf/service/navigationstatus/message/NavigationStatus.pb.h>
-#include "aasdk/Error/Error.hpp"
+#include "Error/Error.hpp"
 
 namespace aasdk::channel::navigationstatus {
 

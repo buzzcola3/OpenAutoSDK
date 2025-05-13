@@ -1,8 +1,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Error/Error.hpp>
+#include <Common/Data.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk

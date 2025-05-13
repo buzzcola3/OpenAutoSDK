@@ -19,7 +19,7 @@
 
 #include <functional>
 #include <boost/asio/ip/tcp.hpp>
-#include <aasdk/Common/Data.hpp>
+#include <Common/Data.hpp>
 
 
 namespace aasdk {

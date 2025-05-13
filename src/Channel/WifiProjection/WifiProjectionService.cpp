@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/wifiprojection/WifiProjectionMessageId.pb.h>
-#include <aasdk/Channel/WifiProjection/IWifiProjectionServiceEventHandler.hpp>
-#include <aasdk/Channel/WifiProjection/WifiProjectionService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/WifiProjection/IWifiProjectionServiceEventHandler.hpp>
+#include <Channel/WifiProjection/WifiProjectionService.hpp>
+#include "Common/Log.hpp"
 
 
 namespace aasdk::channel::wifiprojection {

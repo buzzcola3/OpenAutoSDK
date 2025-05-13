@@ -17,9 +17,9 @@
 */
 
 #include <gtest/gtest.h>
-#include <aasdk/TCP/UT/TCPWrapper.mock.hpp>
-#include <aasdk/TCP/UT/TCPEndpointPromiseHandler.mock.hpp>
-#include <aasdk/TCP/TCPEndpoint.hpp>
+#include <TCP/UT/TCPWrapper.mock.hpp>
+#include <TCP/UT/TCPEndpointPromiseHandler.mock.hpp>
+#include <TCP/TCPEndpoint.hpp>
 
 
 namespace aasdk

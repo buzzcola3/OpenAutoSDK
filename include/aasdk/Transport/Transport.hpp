@@ -20,8 +20,8 @@
 #include <list>
 #include <queue>
 #include <boost/asio.hpp>
-#include <aasdk/Transport/ITransport.hpp>
-#include <aasdk/Transport/DataSink.hpp>
+#include <Transport/ITransport.hpp>
+#include <Transport/DataSink.hpp>
 
 
 namespace aasdk {

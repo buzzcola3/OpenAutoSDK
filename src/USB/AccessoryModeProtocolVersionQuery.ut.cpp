@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/USB/UT/USBWrapper.mock.hpp>
-#include <aasdk/USB/UT/USBEndpoint.mock.hpp>
-#include <aasdk/USB/UT/AccessoryModeQueryPromiseHandler.mock.hpp>
-#include <aasdk/USB/AccessoryModeProtocolVersionQuery.hpp>
+#include <USB/UT/USBWrapper.mock.hpp>
+#include <USB/UT/USBEndpoint.mock.hpp>
+#include <USB/UT/AccessoryModeQueryPromiseHandler.mock.hpp>
+#include <USB/AccessoryModeProtocolVersionQuery.hpp>
 
 
 namespace aasdk

@@ -17,7 +17,7 @@
 
 #include <iomanip>
 #include <boost/endian/conversion.hpp>
-#include <aasdk/Messenger/MessageId.hpp>
+#include <Messenger/MessageId.hpp>
 
 
 namespace aasdk::messenger {

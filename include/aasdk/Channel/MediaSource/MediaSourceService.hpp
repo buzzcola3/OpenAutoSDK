@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "aasdk/Messenger/MessageId.hpp"
-#include "aasdk/Messenger/Timestamp.hpp"
-#include "aasdk/Channel/Channel.hpp"
+#include "Messenger/MessageId.hpp"
+#include "Messenger/Timestamp.hpp"
+#include "Channel/Channel.hpp"
 #include "IMediaSourceService.hpp"
 
 

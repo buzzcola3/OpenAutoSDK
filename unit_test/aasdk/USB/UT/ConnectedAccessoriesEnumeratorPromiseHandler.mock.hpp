@@ -1,8 +1,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/Error/Error.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk

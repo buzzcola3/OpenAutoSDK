@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/Messenger/MessageInStream.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Messenger/MessageInStream.hpp>
+#include <Error/Error.hpp>
+#include <Common/Log.hpp>
 #include <iostream>
 
 

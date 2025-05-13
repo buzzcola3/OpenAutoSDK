@@ -23,9 +23,9 @@
 #include <aap_protobuf/service/media/shared/message/Start.pb.h>
 #include <aap_protobuf/service/media/shared/message/Stop.pb.h>
 #include <aap_protobuf/service/control/message/ChannelOpenRequest.pb.h>
-#include "aasdk/Messenger/Timestamp.hpp"
-#include "aasdk/Common/Data.hpp"
-#include "aasdk/Error/Error.hpp"
+#include "Messenger/Timestamp.hpp"
+#include "Common/Data.hpp"
+#include "Error/Error.hpp"
 #include <aap_protobuf/service/media/video/message/VideoFocusRequestNotification.pb.h>
 
 namespace aasdk::channel::mediasink::audio {

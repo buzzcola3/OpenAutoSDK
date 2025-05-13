@@ -18,9 +18,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <aasdk/Messenger/IMessenger.hpp>
-#include "aasdk/Channel/Channel.hpp"
-#include <aasdk/Channel/Control/IControlServiceChannel.hpp>
+#include <Messenger/IMessenger.hpp>
+#include <Channel/Channel.hpp>
+#include <Channel/Control/IControlServiceChannel.hpp>
 
 
 namespace aasdk::channel::control {

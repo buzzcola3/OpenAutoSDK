@@ -18,8 +18,8 @@
 #pragma once
 
 #include <boost/asio/ip/tcp.hpp>
-#include <aasdk/TCP/ITCPEndpoint.hpp>
-#include <aasdk/TCP/ITCPWrapper.hpp>
+#include <TCP/ITCPEndpoint.hpp>
+#include <TCP/ITCPWrapper.hpp>
 
 
 namespace aasdk {

@@ -18,9 +18,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <aasdk/USB/AccessoryModeQueryType.hpp>
-#include <aasdk/USB/IAccessoryModeQuery.hpp>
-#include <aasdk/USB/IUSBEndpoint.hpp>
+#include <USB/AccessoryModeQueryType.hpp>
+#include <USB/IAccessoryModeQuery.hpp>
+#include <USB/IUSBEndpoint.hpp>
 
 
 namespace aasdk {

@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/IAccessoryModeQueryFactory.hpp>
-#include <aasdk/USB/IAccessoryModeQueryChain.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/IAccessoryModeQueryFactory.hpp>
+#include <USB/IAccessoryModeQueryChain.hpp>
 
 
 namespace aasdk {

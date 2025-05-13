@@ -16,7 +16,7 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/asio.hpp>
-#include <aasdk/TCP/TCPWrapper.hpp>
+#include <TCP/TCPWrapper.hpp>
 
 
 namespace aasdk {

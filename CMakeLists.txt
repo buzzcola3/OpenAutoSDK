@@ -55,7 +55,7 @@ endif()
 
 # Paths
 set(sources_directory ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(include_directory ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(include_directory ${CMAKE_CURRENT_SOURCE_DIR}/include/aasdk)
 set(include_ut_directory ${CMAKE_CURRENT_SOURCE_DIR}/include_ut)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -94,22 +94,99 @@ if(AASDK_TEST)
     FetchContent_MakeAvailable(googletest)
 endif(AASDK_TEST)
 
-find_package(aap_protobuf REQUIRED)
-
-# Building on a Mac requires Abseil
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")  # macOS
-    message(STATUS "MacOS System Detected")
-    find_package(protobuf REQUIRED CONFIG)
-    find_package(absl REQUIRED)
-else ()
-    find_package(Protobuf REQUIRED)
-endif ()
-
+#find_package(aap_protobuf REQUIRED)
 include(FindProtobuf)
+
+# ----------------------------------------------------------------------------
+# 1) gather all .proto under protobuf/aap_protobuf, relative to that root:
+set(PROTO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/protobuf")
+
+file(GLOB_RECURSE AAP_PROTO_FILES
+  RELATIVE "${PROTO_ROOT}"
+  "${PROTO_ROOT}/aap_protobuf/*.proto"
+)
+
+# 2) generate .pb.h/.pb.cc into build dir, preserving subdirs:
+set(GEN_SRCS   "")
+set(GEN_HDRS   "")
+foreach(_f IN LISTS AAP_PROTO_FILES)
+  get_filename_component(_dir  "${_f}" PATH)
+  get_filename_component(_name "${_f}" NAME_WE)
+  set(_out_dir "${CMAKE_CURRENT_BINARY_DIR}/${_dir}")
+  file(MAKE_DIRECTORY "${_out_dir}")
+  set(_h  "${_out_dir}/${_name}.pb.h")
+  set(_cc "${_out_dir}/${_name}.pb.cc")
+  list(APPEND GEN_HDRS   "${_h}")
+  list(APPEND GEN_SRCS   "${_cc}")
+
+  add_custom_command(
+    OUTPUT  "${_h}" "${_cc}"
+    COMMAND ${Protobuf_PROTOC_EXECUTABLE}
+            --proto_path="."
+            --cpp_out="${CMAKE_CURRENT_BINARY_DIR}"
+            "${_f}"
+    WORKING_DIRECTORY "${PROTO_ROOT}"
+    DEPENDS "${PROTO_ROOT}/${_f}"
+    COMMENT "protoc -> ${_f}"
+  )
+endforeach()
+
+# 3) a custom target so the files actually get generated before build:
+add_custom_target(aap_protobuf_proto ALL
+  DEPENDS ${GEN_SRCS} ${GEN_HDRS}
+)
+
+# 4) package them into a small static lib:
+add_library(aap_protobuf_gen SHARED
+  ${GEN_SRCS}
+  ${GEN_HDRS}
+)
+add_library(aap_protobuf ALIAS aap_protobuf_gen)
+
+add_dependencies(aap_protobuf_gen aap_protobuf_proto)
+target_include_directories(aap_protobuf_gen PUBLIC
+  "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(aap_protobuf_gen PUBLIC
+  ${Protobuf_LIBRARIES}
+)
+
+# 5) gather your .cpp/.hpp for aasdk _before_ the add_library
+file(GLOB_RECURSE source_files
+     "${sources_directory}/*.cpp"
+)
+file(GLOB_RECURSE include_files
+     "${include_directory}/*.hpp"
+)
+file(GLOB_RECURSE tests_source_files
+     "${sources_directory}/*.ut.cpp"
+)
+list(REMOVE_ITEM source_files ${tests_source_files})
+
+# now define the aasdk target with those sources
+add_library(aasdk SHARED
+  ${source_files}
+  ${include_files}
+)
+
+target_include_directories(aasdk PUBLIC
+  ${include_directory}            # <repo>/aasdk/include
+  ${CMAKE_CURRENT_BINARY_DIR}     # for generated .pb.h files
+)
 
 find_package(Boost REQUIRED COMPONENTS system log_setup log OPTIONAL_COMPONENTS unit_test_framework)
 find_package(libusb-1.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
+
+# link in our freshly‐generated code:
+target_link_libraries(aasdk PUBLIC
+  aap_protobuf_gen
+  libusb
+  ${Boost_LIBRARIES}
+  ${Protobuf_LIBRARIES}
+  ${OPENSSL_LIBRARIES}
+  ${WINSOCK2_LIBRARIES}
+)
 
 include_directories(
         ${Boost_INCLUDE_DIRS}
@@ -121,79 +198,79 @@ include_directories(
         ${include_directory}
         ${include_ut_directory})
 
-file(GLOB_RECURSE source_files ${sources_directory}/*.cpp)
-file(GLOB_RECURSE include_files ${include_directory}/*.hpp)
-file(GLOB_RECURSE tests_source_files ${sources_directory}/*.ut.cpp)
-file(GLOB_RECURSE tests_include_files ${include_ut_directory}/*.hpp)
-
-list(REMOVE_ITEM source_files ${tests_source_files})
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")  # macOS
-    message(NOTICE "Configuring STATIC Library for MacOS")
-    add_library(aasdk STATIC
-            ${source_files}
-            ${include_files})
-else()
-    message(NOTICE "Configuring SHARED Library")
-    add_library(aasdk SHARED
-            ${source_files}
-            ${include_files})
-endif()
-target_include_directories(aasdk PUBLIC ${AAP_PROTOBUF_INCLUDE_DIR})
-
-target_link_libraries(aasdk PUBLIC
-        libusb
-        ${Boost_LIBRARIES}
-        ${PROTOBUF_LIBRARIES}
-        ${AAP_PROTOBUF_LIB_DIR}
-        ${OPENSSL_LIBRARIES}
-        ${WINSOCK2_LIBRARIES})
-
-
-set(LIBRARY_VERSION_STRING "${LIBRARY_BUILD_MAJOR_RELEASE}.${LIBRARY_BUILD_MINOR_RELEASE}.${LIBRARY_BUILD_INCREMENTAL}+${LIBRARY_BUILD_DATE}")
-message(STATUS "Project Version: ${LIBRARY_VERSION_STRING}")
-set_target_properties(aasdk
-        PROPERTIES VERSION ${LIBRARY_VERSION_STRING} SOVERSION ${LIBRARY_BUILD_INCREMENTAL})
-
-# Install rules
-install(TARGETS aasdk libusb
-        EXPORT aasdkTargets
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
-)
-
-# Install headers explicitly
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/aasdk
-        DESTINATION include
-)
-
-# Export the targets to a script
-install(EXPORT aasdkTargets
-        FILE aasdkTargets.cmake
-        NAMESPACE AASDK::
-        DESTINATION lib/cmake/aasdk
-)
-
-# Create a Config file for FindPackage
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfigVersion.cmake"
-        VERSION 1.0
-        COMPATIBILITY AnyNewerVersion
-)
-
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfig.cmake"
-        INSTALL_DESTINATION lib/cmake/aasdk
-)
-
-# Install the config files
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfigVersion.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfig.cmake"
-        DESTINATION lib/cmake/aasdk)
-
+#file(GLOB_RECURSE source_files ${sources_directory}/*.cpp)
+#file(GLOB_RECURSE include_files ${include_directory}/*.hpp)
+#file(GLOB_RECURSE tests_source_files ${sources_directory}/*.ut.cpp)
+#file(GLOB_RECURSE tests_include_files ${include_ut_directory}/*.hpp)
+#
+#list(REMOVE_ITEM source_files ${tests_source_files})
+#
+##if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")  # macOS
+##    message(NOTICE "Configuring STATIC Library for MacOS")
+##    add_library(aasdk STATIC
+##            ${source_files}
+##            ${include_files})
+##else()
+##    message(NOTICE "Configuring SHARED Library")
+##    add_library(aasdk SHARED
+##            ${source_files}
+##            ${include_files})
+##endif()
+#target_include_directories(aasdk PUBLIC ${AAP_PROTOBUF_INCLUDE_DIR})
+#
+#target_link_libraries(aasdk PUBLIC
+#        libusb
+#        ${Boost_LIBRARIES}
+#        ${PROTOBUF_LIBRARIES}
+#        ${AAP_PROTOBUF_LIB_DIR}
+#        ${OPENSSL_LIBRARIES}
+#        ${WINSOCK2_LIBRARIES})
+#
+#
+#set(LIBRARY_VERSION_STRING "${LIBRARY_BUILD_MAJOR_RELEASE}.${LIBRARY_BUILD_MINOR_RELEASE}.${LIBRARY_BUILD_INCREMENTAL}+${LIBRARY_BUILD_DATE}")
+#message(STATUS "Project Version: ${LIBRARY_VERSION_STRING}")
+#set_target_properties(aasdk
+#        PROPERTIES VERSION ${LIBRARY_VERSION_STRING} SOVERSION ${LIBRARY_BUILD_INCREMENTAL})
+#
+## Install rules
+#install(TARGETS aasdk libusb
+#        EXPORT aasdkTargets
+#        LIBRARY DESTINATION lib
+#        ARCHIVE DESTINATION lib
+#        RUNTIME DESTINATION bin
+#        INCLUDES DESTINATION include
+#)
+#
+## Install headers explicitly
+#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/aasdk
+#        DESTINATION include
+#)
+#
+## Export the targets to a script
+#install(EXPORT aasdkTargets
+#        FILE aasdkTargets.cmake
+#        NAMESPACE AASDK::
+#        DESTINATION lib/cmake/aasdk
+#)
+#
+## Create a Config file for FindPackage
+#include(CMakePackageConfigHelpers)
+#write_basic_package_version_file(
+#        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfigVersion.cmake"
+#        VERSION 1.0
+#        COMPATIBILITY AnyNewerVersion
+#)
+#
+#configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+#        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfig.cmake"
+#        INSTALL_DESTINATION lib/cmake/aasdk
+#)
+#
+## Install the config files
+#install(FILES "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfigVersion.cmake"
+#        "${CMAKE_CURRENT_BINARY_DIR}/aasdkConfig.cmake"
+#        DESTINATION lib/cmake/aasdk)
+#
 if(AASDK_TEST)
     add_executable(aasdk_ut
             ${tests_source_files}

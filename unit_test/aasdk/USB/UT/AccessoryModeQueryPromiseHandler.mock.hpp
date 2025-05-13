@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/USB/IUSBEndpoint.hpp>
+#include <USB/IUSBEndpoint.hpp>
 
 
 namespace aasdk

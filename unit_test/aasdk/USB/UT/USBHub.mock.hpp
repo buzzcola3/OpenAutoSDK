@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/USB/IUSBHub.hpp>
+#include <USB/IUSBHub.hpp>
 
 
 namespace aasdk

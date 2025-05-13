@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <aasdk/USB/IUSBWrapper.hpp>
+#include <USB/IUSBWrapper.hpp>
 
 
 namespace aasdk {

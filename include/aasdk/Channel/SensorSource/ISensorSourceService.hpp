@@ -18,9 +18,9 @@
 #pragma once
 
 #include <memory>
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
-#include "aasdk/Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
+#include "Messenger/ChannelId.hpp"
 #include <aap_protobuf/service/sensorsource/message/SensorStartResponseMessage.pb.h>
 #include <aap_protobuf/service/sensorsource/message/SensorBatch.pb.h>
 #include <aap_protobuf/service/control/message/ChannelOpenResponse.pb.h>

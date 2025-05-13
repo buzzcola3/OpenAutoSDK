@@ -19,7 +19,7 @@
 
 #include <limits>
 #include <boost/circular_buffer.hpp>
-#include <aasdk/Common/Data.hpp>
+#include <Common/Data.hpp>
 
 
 namespace aasdk {

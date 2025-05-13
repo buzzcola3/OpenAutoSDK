@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
-#include "aasdk/Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
+#include "Messenger/ChannelId.hpp"
 #include <aap_protobuf/service/control/message/BatteryStatusNotification.pb.h>
 #include <aap_protobuf/service/control/message/ByeByeRequest.pb.h>
 #include <aap_protobuf/service/control/message/ByeByeResponse.pb.h>
@@ -31,8 +31,8 @@
 #include <aap_protobuf/service/control/message/PingRequest.pb.h>
 #include <aap_protobuf/service/control/message/PingResponse.pb.h>
 #include <aap_protobuf/service/control/message/VoiceSessionNotification.pb.h>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Channel/Control/IControlServiceChannelEventHandler.hpp>
+#include <Common/Data.hpp>
+#include <Channel/Control/IControlServiceChannelEventHandler.hpp>
 
 
 namespace aasdk::channel::control {

@@ -16,10 +16,10 @@
 *  along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <aasdk/USB/UT/USBWrapper.mock.hpp>
-#include <aasdk/USB/UT/USBEndpoint.mock.hpp>
-#include <aasdk/USB/UT/AccessoryModeQueryPromiseHandler.mock.hpp>
-#include <aasdk/USB/AccessoryModeSendStringQuery.hpp>
+#include <USB/UT/USBWrapper.mock.hpp>
+#include <USB/UT/USBEndpoint.mock.hpp>
+#include <USB/UT/AccessoryModeQueryPromiseHandler.mock.hpp>
+#include <USB/AccessoryModeSendStringQuery.hpp>
 
 
 namespace aasdk

@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/radio/RadioMessageId.pb.h>
-#include <aasdk/Channel/Radio/IRadioServiceEventHandler.hpp>
-#include <aasdk/Channel/Radio/RadioService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/Radio/IRadioServiceEventHandler.hpp>
+#include <Channel/Radio/RadioService.hpp>
+#include "Common/Log.hpp"
 
 /*
  * This is a Radio channel that could be used for integration onto another Raspberry Pi/Other Device to integrate with third party systems or head units to help control the radio if necessary.

@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "aasdk/Messenger/MessageId.hpp"
-#include "aasdk/Channel/Channel.hpp"
+#include "Messenger/MessageId.hpp"
+#include "Channel/Channel.hpp"
 #include "IVideoMediaSinkService.hpp"
 #include <aap_protobuf/service/media/video/message/VideoFocusNotification.pb.h>
 

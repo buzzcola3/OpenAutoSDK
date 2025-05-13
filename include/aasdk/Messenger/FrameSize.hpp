@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Messenger/FrameSizeType.hpp>
+#include <Common/Data.hpp>
+#include <Messenger/FrameSizeType.hpp>
 
 
 namespace aasdk {

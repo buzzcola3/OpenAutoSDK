@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/bluetooth/BluetoothMessageId.pb.h>
-#include "aasdk/Channel/Bluetooth/IBluetoothServiceEventHandler.hpp"
-#include "aasdk/Channel/Bluetooth/BluetoothService.hpp"
-#include "aasdk/Common/Log.hpp"
+#include "Channel/Bluetooth/IBluetoothServiceEventHandler.hpp"
+#include "Channel/Bluetooth/BluetoothService.hpp"
+#include "Common/Log.hpp"
 
 namespace aasdk::channel::bluetooth {
 

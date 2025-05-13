@@ -18,9 +18,9 @@
 #pragma once
 
 #include <memory>
-#include <aasdk/USB/USBWrapper.hpp>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/IO/Promise.hpp>
+#include <USB/USBWrapper.hpp>
+#include <Common/Data.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

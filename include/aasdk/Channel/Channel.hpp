@@ -18,9 +18,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include "aasdk/Messenger/IMessenger.hpp"
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
+#include "Messenger/IMessenger.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
 #include <aap_protobuf/service/control/ControlMessageType.pb.h>
 
 namespace aasdk {

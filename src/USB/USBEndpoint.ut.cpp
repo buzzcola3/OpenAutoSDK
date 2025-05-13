@@ -17,11 +17,11 @@
 */
 
 #include <gtest/gtest.h>
-#include <aasdk/USB/UT/USBWrapper.mock.hpp>
-#include <aasdk/USB/UT/USBEndpoint.mock.hpp>
-#include <aasdk/USB/UT/USBEndpointPromiseHandler.mock.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/USB/USBEndpoint.hpp>
+#include <USB/UT/USBWrapper.mock.hpp>
+#include <USB/UT/USBEndpoint.mock.hpp>
+#include <USB/UT/USBEndpointPromiseHandler.mock.hpp>
+#include <Error/Error.hpp>
+#include <USB/USBEndpoint.hpp>
 
 
 namespace aasdk

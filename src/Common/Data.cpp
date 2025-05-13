@@ -16,8 +16,8 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/algorithm/hex.hpp>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Common/Data.hpp>
+#include <Common/Log.hpp>
 #include <string>
 #include <sstream>
 #include <iomanip>

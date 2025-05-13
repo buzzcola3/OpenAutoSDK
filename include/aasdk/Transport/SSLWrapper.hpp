@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <aasdk/Transport/ISSLWrapper.hpp>
+#include <Transport/ISSLWrapper.hpp>
 
 
 namespace aasdk {

@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/inputsource/InputMessageId.pb.h>
-#include "aasdk/Channel/InputSource/InputSourceService.hpp"
-#include "aasdk/Channel/InputSource/IInputSourceServiceEventHandler.hpp"
-#include "aasdk/Common/Log.hpp"
+#include "Channel/InputSource/InputSourceService.hpp"
+#include "Channel/InputSource/IInputSourceServiceEventHandler.hpp"
+#include "Common/Log.hpp"
 
 
 namespace aasdk::channel::inputsource {

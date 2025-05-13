@@ -20,8 +20,8 @@
 #include <unordered_map>
 #include <memory>
 #include <boost/asio.hpp>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/IUSBEndpoint.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/IUSBEndpoint.hpp>
 
 
 namespace aasdk {

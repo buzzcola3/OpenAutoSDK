@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/USB/USBEndpoint.hpp>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <USB/USBEndpoint.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <Error/Error.hpp>
+#include <Common/Log.hpp>
 
 namespace aasdk {
   namespace usb {

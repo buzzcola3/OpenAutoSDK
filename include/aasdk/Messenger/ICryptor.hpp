@@ -18,7 +18,7 @@
 #pragma once
 
 #include <memory>
-#include <aasdk/Common/Data.hpp>
+#include <Common/Data.hpp>
 
 namespace aasdk::messenger {
 

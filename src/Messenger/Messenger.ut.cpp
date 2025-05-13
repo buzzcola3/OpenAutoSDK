@@ -16,11 +16,11 @@
 *  along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <aasdk/Messenger/UT/MessageInStream.mock.hpp>
-#include <aasdk/Messenger/UT/MessageOutStream.mock.hpp>
-#include <aasdk/Messenger/UT/ReceivePromiseHandler.mock.hpp>
-#include <aasdk/Messenger/UT/SendPromiseHandler.mock.hpp>
-#include <aasdk/Messenger/Messenger.hpp>
+#include <Messenger/UT/MessageInStream.mock.hpp>
+#include <Messenger/UT/MessageOutStream.mock.hpp>
+#include <Messenger/UT/ReceivePromiseHandler.mock.hpp>
+#include <Messenger/UT/SendPromiseHandler.mock.hpp>
+#include <Messenger/Messenger.hpp>
 
 
 namespace aasdk

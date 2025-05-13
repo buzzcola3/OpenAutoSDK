@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "aasdk/Channel/MediaSource/MediaSourceService.hpp"
+#include "Channel/MediaSource/MediaSourceService.hpp"
 
 namespace aasdk::channel::mediasource::audio {
 

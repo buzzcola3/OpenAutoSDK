@@ -17,9 +17,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/phonestatus/PhoneStatusMessageId.pb.h>
-#include <aasdk/Channel/PhoneStatus/IPhoneStatusServiceEventHandler.hpp>
-#include <aasdk/Channel/PhoneStatus/PhoneStatusService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/PhoneStatus/IPhoneStatusServiceEventHandler.hpp>
+#include <Channel/PhoneStatus/PhoneStatusService.hpp>
+#include "Common/Log.hpp"
 
 /*
  * This is a Phone Status channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes.

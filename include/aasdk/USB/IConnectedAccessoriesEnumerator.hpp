@@ -18,7 +18,7 @@
 #pragma once
 
 #include <memory>
-#include <aasdk/IO/Promise.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

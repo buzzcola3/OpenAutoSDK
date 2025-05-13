@@ -18,8 +18,8 @@
 #pragma once
 
 #include <memory>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/IO/Promise.hpp>
+#include <Common/Data.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

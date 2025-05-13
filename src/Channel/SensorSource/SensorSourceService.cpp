@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/sensorsource/SensorMessageId.pb.h>
-#include <aasdk/Channel/SensorSource/ISensorSourceServiceEventHandler.hpp>
-#include <aasdk/Channel/SensorSource/SensorSourceService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/SensorSource/ISensorSourceServiceEventHandler.hpp>
+#include <Channel/SensorSource/SensorSourceService.hpp>
+#include "Common/Log.hpp"
 
 
 namespace aasdk::channel::sensorsource {

@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Common/Data.hpp>
+#include <Error/Error.hpp>
+#include <Common/Data.hpp>
 #include <aap_protobuf/service/control/message/AudioFocusRequest.pb.h>
 #include <aap_protobuf/service//control/message/BatteryStatusNotification.pb.h>
 #include <aap_protobuf/service/control/message/ByeByeResponse.pb.h>

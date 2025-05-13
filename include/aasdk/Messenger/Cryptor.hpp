@@ -18,8 +18,8 @@
 #pragma once
 
 #include <mutex>
-#include <aasdk/Transport/ISSLWrapper.hpp>
-#include <aasdk/Messenger/ICryptor.hpp>
+#include <Transport/ISSLWrapper.hpp>
+#include <Messenger/ICryptor.hpp>
 
 
 namespace aasdk {

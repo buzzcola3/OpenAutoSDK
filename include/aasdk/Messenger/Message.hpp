@@ -20,11 +20,11 @@
 #include <boost/noncopyable.hpp>
 #include <memory>
 #include <google/protobuf/message.h>
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Messenger/ChannelId.hpp>
-#include <aasdk/Messenger/EncryptionType.hpp>
-#include <aasdk/Messenger/MessageType.hpp>
-#include <aasdk/Messenger/MessageId.hpp>
+#include <Common/Data.hpp>
+#include <Messenger/ChannelId.hpp>
+#include <Messenger/EncryptionType.hpp>
+#include <Messenger/MessageType.hpp>
+#include <Messenger/MessageId.hpp>
 
 namespace aasdk::messenger {
 

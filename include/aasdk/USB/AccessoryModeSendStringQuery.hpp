@@ -18,8 +18,8 @@
 #pragma once
 
 #include <string>
-#include <aasdk/USB/AccessoryModeQuery.hpp>
-#include <aasdk/USB/AccessoryModeSendStringType.hpp>
+#include <USB/AccessoryModeQuery.hpp>
+#include <USB/AccessoryModeSendStringType.hpp>
 
 
 namespace aasdk {

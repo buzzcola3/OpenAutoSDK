@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/mediaplayback/MediaPlaybackStatusMessageId.pb.h>
-#include "aasdk/Channel/MediaPlaybackStatus/MediaPlaybackStatusService.hpp"
-#include "aasdk/Channel/MediaPlaybackStatus/IMediaPlaybackStatusServiceEventHandler.hpp"
-#include "aasdk/Common/Log.hpp"
+#include "Channel/MediaPlaybackStatus/MediaPlaybackStatusService.hpp"
+#include "Channel/MediaPlaybackStatus/IMediaPlaybackStatusServiceEventHandler.hpp"
+#include "Common/Log.hpp"
 
 /*
  * This is a Media Playback Status channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes - such as updating the LCD screen on older Vauxhall/Opel/GM Cars

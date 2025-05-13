@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include <aasdk/Common/Data.hpp>
-#include <aasdk/Messenger/ChannelId.hpp>
-#include <aasdk/Messenger/FrameType.hpp>
-#include <aasdk/Messenger/EncryptionType.hpp>
-#include <aasdk/Messenger/MessageType.hpp>
+#include <Common/Data.hpp>
+#include <Messenger/ChannelId.hpp>
+#include <Messenger/FrameType.hpp>
+#include <Messenger/EncryptionType.hpp>
+#include <Messenger/MessageType.hpp>
 
 
 namespace aasdk {

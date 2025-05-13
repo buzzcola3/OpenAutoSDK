@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Messenger/ICryptor.hpp>
+#include <Messenger/ICryptor.hpp>
 
 
 namespace aasdk

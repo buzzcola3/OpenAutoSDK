@@ -20,9 +20,9 @@
 
 #include <memory>
 #include "IAudioMediaSinkServiceEventHandler.hpp"
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
-#include "aasdk/Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
+#include "Messenger/ChannelId.hpp"
 #include <aap_protobuf/service/media/shared/message/Setup.pb.h>
 #include <aap_protobuf/service/media/shared/message/Config.pb.h>
 #include <aap_protobuf/service/media/source/message/Ack.pb.h>

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include "aasdk/Channel/MediaSink/Video/Channel/VideoChannel.hpp"
+#include "Channel/MediaSink/Video/Channel/VideoChannel.hpp"
 
 namespace aasdk::channel::mediasink::video::channel {
 

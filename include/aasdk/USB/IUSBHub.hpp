@@ -19,9 +19,9 @@
 
 #include <memory>
 #include <functional>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/IO/Promise.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <Error/Error.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

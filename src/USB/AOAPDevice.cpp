@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdexcept>
-#include <aasdk/USB/USBEndpoint.hpp>
-#include <aasdk/USB/AOAPDevice.hpp>
-#include <aasdk/Error/Error.hpp>
+#include <USB/USBEndpoint.hpp>
+#include <USB/AOAPDevice.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk {

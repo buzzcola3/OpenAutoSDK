@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "aasdk/Channel/Channel.hpp"
+#include "Channel/Channel.hpp"
 #include "ISensorSourceService.hpp"
 
 namespace aasdk::channel::sensorsource {

@@ -16,10 +16,10 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/media/sink/MediaMessageId.pb.h>
-#include "aasdk/Messenger/Timestamp.hpp"
-#include "aasdk/Channel/MediaSource/IMediaSourceServiceEventHandler.hpp"
-#include "aasdk/Channel/MediaSource/MediaSourceService.hpp"
-#include "aasdk/Common/Log.hpp"
+#include "Messenger/Timestamp.hpp"
+#include "Channel/MediaSource/IMediaSourceServiceEventHandler.hpp"
+#include "Channel/MediaSource/MediaSourceService.hpp"
+#include "Common/Log.hpp"
 
 
 namespace aasdk::channel::mediasource {

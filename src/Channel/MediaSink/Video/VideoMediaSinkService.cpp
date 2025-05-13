@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/media/sink/MediaMessageId.pb.h>
-#include <aasdk/Channel//MediaSink/Video/IVideoMediaSinkServiceEventHandler.hpp>
-#include <aasdk/Channel/MediaSink/Video/VideoMediaSinkService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel//MediaSink/Video/IVideoMediaSinkServiceEventHandler.hpp>
+#include <Channel/MediaSink/Video/VideoMediaSinkService.hpp>
+#include "Common/Log.hpp"
 
 /*
  * TODO: Merge Audio and Video Sink Service - P4

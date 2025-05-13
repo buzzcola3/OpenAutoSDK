@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/Channel/GenericNotification/IGenericNotificationServiceEventHandler.hpp>
-#include <aasdk/Channel/GenericNotification/GenericNotificationService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/GenericNotification/IGenericNotificationServiceEventHandler.hpp>
+#include <Channel/GenericNotification/GenericNotificationService.hpp>
+#include "Common/Log.hpp"
 
 /*
  * This is a Generic Notification channel - not much is known at this point.

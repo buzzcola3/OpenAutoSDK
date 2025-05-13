@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iomanip>
-#include <aasdk/Error/ErrorCode.hpp>
-#include <aasdk/USB/AccessoryModeProtocolVersionQuery.hpp>
-#include <aasdk/USB/USBEndpoint.hpp>
+#include <Error/ErrorCode.hpp>
+#include <USB/AccessoryModeProtocolVersionQuery.hpp>
+#include <USB/USBEndpoint.hpp>
 
 
 namespace aasdk {

@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "aasdk/Channel/Channel.hpp"
+#include "Channel/Channel.hpp"
 #include "IBluetoothService.hpp"
 
 namespace aasdk::channel::bluetooth {

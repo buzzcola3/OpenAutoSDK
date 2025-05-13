@@ -20,8 +20,8 @@
 #include <utility>
 #include <boost/asio.hpp>
 #include <libusb.h>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/IAOAPDevice.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/IAOAPDevice.hpp>
 
 
 namespace aasdk {

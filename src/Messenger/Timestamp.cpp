@@ -16,7 +16,7 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/endian/conversion.hpp>
-#include <aasdk/Messenger/Timestamp.hpp>
+#include <Messenger/Timestamp.hpp>
 
 
 namespace aasdk::messenger {

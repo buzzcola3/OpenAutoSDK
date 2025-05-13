@@ -20,7 +20,7 @@
 #include <aap_protobuf/service/control/message/ChannelOpenRequest.pb.h>
 #include <aap_protobuf/service/mediaplayback/message/MediaPlaybackMetadata.pb.h>
 #include <aap_protobuf/service/mediaplayback/message/MediaPlaybackStatus.pb.h>
-#include "aasdk/Error/Error.hpp"
+#include "Error/Error.hpp"
 
 
 namespace aasdk::channel::mediaplaybackstatus {

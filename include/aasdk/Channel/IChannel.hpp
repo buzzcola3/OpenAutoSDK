@@ -18,8 +18,8 @@
 #pragma once
 
 #include <memory>
-#include "aasdk/Messenger/ChannelId.hpp"
-#include "aasdk/Channel/Promise.hpp"
+#include "Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
 
 namespace aasdk::channel {
 

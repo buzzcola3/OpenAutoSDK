@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <aasdk/TCP/ITCPEndpoint.hpp>
-#include <aasdk/Transport/Transport.hpp>
+#include <TCP/ITCPEndpoint.hpp>
+#include <Transport/Transport.hpp>
 
 
 namespace aasdk {

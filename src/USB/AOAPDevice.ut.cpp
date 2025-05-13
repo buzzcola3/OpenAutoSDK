@@ -16,8 +16,8 @@
 *  along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <aasdk/USB/UT/USBWrapper.mock.hpp>
-#include <aasdk/USB/AOAPDevice.hpp>
+#include <USB/UT/USBWrapper.mock.hpp>
+#include <USB/AOAPDevice.hpp>
 
 
 namespace aasdk

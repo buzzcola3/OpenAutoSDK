@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/USB/IAccessoryModeQuery.hpp>
+#include <USB/IAccessoryModeQuery.hpp>
 
 
 namespace aasdk

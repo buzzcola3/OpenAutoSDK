@@ -24,7 +24,7 @@
 #include <aap_protobuf/service/media/shared/message/Config.pb.h>
 #include <aap_protobuf/service/media/source/message/MicrophoneRequest.pb.h>
 #include <aap_protobuf/service/control/message/ChannelOpenRequest.pb.h>
-#include "aasdk/Error/Error.hpp"
+#include "Error/Error.hpp"
 
 
 namespace aasdk::channel::mediasource {

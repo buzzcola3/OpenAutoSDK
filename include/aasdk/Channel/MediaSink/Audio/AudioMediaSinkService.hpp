@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "aasdk/Messenger/MessageId.hpp"
-#include "aasdk/Channel/Channel.hpp"
+#include "Messenger/MessageId.hpp"
+#include "Channel/Channel.hpp"
 #include "IAudioMediaSinkService.hpp"
 
 namespace aasdk::channel::mediasink::audio {

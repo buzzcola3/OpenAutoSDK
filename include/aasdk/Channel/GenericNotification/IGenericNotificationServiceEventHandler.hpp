@@ -19,7 +19,7 @@
 
 
 #include <aap_protobuf/service/control/message/ChannelOpenRequest.pb.h>
-#include "aasdk/Error/Error.hpp"
+#include "Error/Error.hpp"
 
 namespace aasdk::channel::genericnotification {
 

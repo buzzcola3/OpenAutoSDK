@@ -18,16 +18,16 @@
 #pragma once
 
 #include <memory>
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
-#include "aasdk/Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
+#include "Messenger/ChannelId.hpp"
 #include <aap_protobuf/service/media/source/message/MicrophoneResponse.pb.h>
 #include <aap_protobuf/service/media/source/message/MicrophoneResponse.pb.h>
 #include <aap_protobuf/service/media/source/message/MicrophoneRequest.pb.h>
 #include <aap_protobuf/service/media/shared/message/Setup.pb.h>
 #include <aap_protobuf/service/media/shared/message/Config.pb.h>
 #include <aap_protobuf/service/control/message/ChannelOpenResponse.pb.h>
-#include "aasdk/Messenger/Timestamp.hpp"
+#include "Messenger/Timestamp.hpp"
 #include "IMediaSourceServiceEventHandler.hpp"
 
 

@@ -19,11 +19,11 @@
 
 #include <boost/asio.hpp>
 #include <list>
-#include <aasdk/Messenger/IMessenger.hpp>
-#include <aasdk/Messenger/IMessageInStream.hpp>
-#include <aasdk/Messenger/IMessageOutStream.hpp>
-#include <aasdk/Messenger/ChannelReceiveMessageQueue.hpp>
-#include <aasdk/Messenger/ChannelReceivePromiseQueue.hpp>
+#include <Messenger/IMessenger.hpp>
+#include <Messenger/IMessageInStream.hpp>
+#include <Messenger/IMessageOutStream.hpp>
+#include <Messenger/ChannelReceiveMessageQueue.hpp>
+#include <Messenger/ChannelReceivePromiseQueue.hpp>
 
 
 namespace aasdk {

@@ -17,11 +17,11 @@
 */
 
 #include <gtest/gtest.h>
-#include <aasdk/USB/UT/USBWrapper.mock.hpp>
-#include <aasdk/USB/UT/AccessoryModeQueryChainFactory.mock.hpp>
-#include <aasdk/USB/UT/AccessoryModeQueryChain.mock.hpp>
-#include <aasdk/USB/UT/USBHubPromiseHandler.mock.hpp>
-#include <aasdk/USB/USBHub.hpp>
+#include <USB/UT/USBWrapper.mock.hpp>
+#include <USB/UT/AccessoryModeQueryChainFactory.mock.hpp>
+#include <USB/UT/AccessoryModeQueryChain.mock.hpp>
+#include <USB/UT/USBHubPromiseHandler.mock.hpp>
+#include <USB/USBHub.hpp>
 
 
 namespace aasdk

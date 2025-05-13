@@ -20,8 +20,8 @@
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 #include <openssl/conf.h>
-#include <aasdk/Transport/SSLWrapper.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Transport/SSLWrapper.hpp>
+#include <Common/Log.hpp>
 
 namespace aasdk {
   namespace transport {

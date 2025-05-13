@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <aasdk/USB/IUSBEndpoint.hpp>
+#include <USB/IUSBEndpoint.hpp>
 
 
 namespace aasdk {

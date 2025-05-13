@@ -18,8 +18,8 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <aasdk/Transport/Transport.hpp>
-#include <aasdk/USB/IAOAPDevice.hpp>
+#include <Transport/Transport.hpp>
+#include <USB/IAOAPDevice.hpp>
 
 
 namespace aasdk {

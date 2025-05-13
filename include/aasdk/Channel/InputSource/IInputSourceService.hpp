@@ -18,9 +18,9 @@
 #pragma once
 
 #include <memory>
-#include "aasdk/Channel/Promise.hpp"
-#include "aasdk/Channel/IChannel.hpp"
-#include "aasdk/Messenger/ChannelId.hpp"
+#include "Channel/Promise.hpp"
+#include "Channel/IChannel.hpp"
+#include "Messenger/ChannelId.hpp"
 #include <aap_protobuf/shared/MessageStatus.pb.h>
 #include <aap_protobuf/service/media/sink/message/KeyBindingResponse.pb.h>
 #include <aap_protobuf/service/inputsource/message/InputReport.pb.h>

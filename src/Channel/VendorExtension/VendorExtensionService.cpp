@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/Channel/VendorExtension/IVendorExtensionServiceEventHandler.hpp>
-#include <aasdk/Channel/VendorExtension/VendorExtensionService.hpp>
-#include "aasdk/Common/Log.hpp"
+#include <Channel/VendorExtension/IVendorExtensionServiceEventHandler.hpp>
+#include <Channel/VendorExtension/VendorExtensionService.hpp>
+#include "Common/Log.hpp"
 
 /*
  * This is a Vendor Extension channel to link to a known Vendor App on the Mobile Phone.

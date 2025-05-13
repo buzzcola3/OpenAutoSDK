@@ -16,8 +16,8 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <iomanip>
-#include <aasdk/USB/AccessoryModeStartQuery.hpp>
-#include <aasdk/USB/USBEndpoint.hpp>
+#include <USB/AccessoryModeStartQuery.hpp>
+#include <USB/USBEndpoint.hpp>
 
 
 namespace aasdk {

@@ -18,9 +18,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/IAccessoryModeQueryChainFactory.hpp>
-#include <aasdk/USB/IConnectedAccessoriesEnumerator.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/IAccessoryModeQueryChainFactory.hpp>
+#include <USB/IConnectedAccessoriesEnumerator.hpp>
 
 
 namespace aasdk {

@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <aasdk/Common/Data.hpp>
+#include <Common/Data.hpp>
 
 
 namespace aasdk {

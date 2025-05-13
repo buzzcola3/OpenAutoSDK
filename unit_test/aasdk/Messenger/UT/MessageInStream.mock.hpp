@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Messenger/IMessageInStream.hpp>
+#include <Messenger/IMessageInStream.hpp>
 
 
 namespace aasdk

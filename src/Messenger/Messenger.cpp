@@ -14,9 +14,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.#include <boost/endian/conversion.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Messenger/Messenger.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Error/Error.hpp>
+#include <Messenger/Messenger.hpp>
+#include <Common/Log.hpp>
 
 namespace aasdk::messenger {
 

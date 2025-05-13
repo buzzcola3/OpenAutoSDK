@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/TCP/ITCPWrapper.hpp>
+#include <TCP/ITCPWrapper.hpp>
 
 
 namespace aasdk

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include "aasdk/Channel/MediaSink/Audio/Channel/GuidanceAudioChannel.hpp"
+#include "Channel/MediaSink/Audio/Channel/GuidanceAudioChannel.hpp"
 
 namespace aasdk::channel::mediasink::audio::channel {
   GuidanceAudioChannel::GuidanceAudioChannel(boost::asio::io_service::strand &strand,

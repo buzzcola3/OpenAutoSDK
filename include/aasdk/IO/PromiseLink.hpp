@@ -19,8 +19,8 @@
 
 #include <memory>
 #include <functional>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/IO/Promise.hpp>
+#include <Error/Error.hpp>
+#include <IO/Promise.hpp>
 
 
 namespace aasdk {

@@ -19,8 +19,8 @@
 
 #include <boost/asio.hpp>
 #include <list>
-#include <aasdk/USB/IUSBHub.hpp>
-#include <aasdk/USB/IAccessoryModeQueryChainFactory.hpp>
+#include <USB/IUSBHub.hpp>
+#include <USB/IAccessoryModeQueryChainFactory.hpp>
 
 
 namespace aasdk {

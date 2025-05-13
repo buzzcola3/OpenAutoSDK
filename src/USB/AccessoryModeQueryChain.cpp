@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/USB/AccessoryModeQueryChain.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/USB/USBEndpoint.hpp>
+#include <USB/AccessoryModeQueryChain.hpp>
+#include <Error/Error.hpp>
+#include <USB/USBEndpoint.hpp>
 
 
 namespace aasdk {

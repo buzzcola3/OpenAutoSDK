@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include <aasdk/USB/IAccessoryModeQueryChainFactory.hpp>
-#include <aasdk/USB/IAccessoryModeQueryFactory.hpp>
+#include <USB/IAccessoryModeQueryChainFactory.hpp>
+#include <USB/IAccessoryModeQueryFactory.hpp>
 
 
 namespace aasdk {

@@ -16,10 +16,10 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <thread>
-#include <aasdk/USB/IUSBWrapper.hpp>
-#include <aasdk/USB/USBHub.hpp>
-#include <aasdk/USB/AccessoryModeQueryChain.hpp>
-#include <aasdk/Error/Error.hpp>
+#include <USB/IUSBWrapper.hpp>
+#include <USB/USBHub.hpp>
+#include <USB/AccessoryModeQueryChain.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk {

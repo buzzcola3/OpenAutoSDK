@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "aasdk/Channel/MediaSink/Audio/AudioMediaSinkService.hpp"
+#include "Channel/MediaSink/Audio/AudioMediaSinkService.hpp"
 
 namespace aasdk::channel::mediasink::audio::channel {
   using aasdk::channel::mediasink::audio::AudioMediaSinkService;

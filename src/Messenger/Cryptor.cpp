@@ -17,9 +17,9 @@
 
 #include <algorithm>
 #include <functional>
-#include <aasdk/Messenger/Cryptor.hpp>
-#include <aasdk/Error/Error.hpp>
-#include <aasdk/Common/Log.hpp>
+#include <Messenger/Cryptor.hpp>
+#include <Error/Error.hpp>
+#include <Common/Log.hpp>
 
 namespace aasdk {
   namespace messenger {

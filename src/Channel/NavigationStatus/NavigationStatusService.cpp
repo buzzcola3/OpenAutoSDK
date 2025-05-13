@@ -16,9 +16,9 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <aap_protobuf/service/navigationstatus//NavigationStatusMessageId.pb.h>
-#include "aasdk/Channel/NavigationStatus/INavigationStatusServiceEventHandler.hpp"
-#include "aasdk/Channel/NavigationStatus/NavigationStatusService.hpp"
-#include "aasdk/Common/Log.hpp"
+#include "Channel/NavigationStatus/INavigationStatusServiceEventHandler.hpp"
+#include "Channel/NavigationStatus/NavigationStatusService.hpp"
+#include "Common/Log.hpp"
 
 /*
  * This is a Navigation Status channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes - such as updating the LCD screen on older Vauxhall/Opel/GM Cars

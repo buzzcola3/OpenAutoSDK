@@ -16,8 +16,8 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <cstring>
-#include <aasdk/Transport/DataSink.hpp>
-#include <aasdk/Error/Error.hpp>
+#include <Transport/DataSink.hpp>
+#include <Error/Error.hpp>
 
 
 namespace aasdk {

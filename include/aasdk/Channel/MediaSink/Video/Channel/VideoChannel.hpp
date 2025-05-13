@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "aasdk/Channel/MediaSink/Video/VideoMediaSinkService.hpp"
+#include "Channel/MediaSink/Video/VideoMediaSinkService.hpp"
 
 namespace aasdk::channel::mediasink::video::channel {
   using aasdk::channel::mediasink::video::VideoMediaSinkService;

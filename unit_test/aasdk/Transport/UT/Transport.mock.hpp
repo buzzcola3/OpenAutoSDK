@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <aasdk/Transport/ITransport.hpp>
+#include <Transport/ITransport.hpp>
 
 
 namespace aasdk

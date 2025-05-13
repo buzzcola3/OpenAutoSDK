@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <aasdk/USB/AccessoryModeQueryFactory.hpp>
-#include <aasdk/USB/AccessoryModeSendStringQuery.hpp>
-#include <aasdk/USB/AccessoryModeStartQuery.hpp>
-#include <aasdk/USB/AccessoryModeProtocolVersionQuery.hpp>
-#include <aasdk/USB/AccessoryModeSendStringType.hpp>
+#include <USB/AccessoryModeQueryFactory.hpp>
+#include <USB/AccessoryModeSendStringQuery.hpp>
+#include <USB/AccessoryModeStartQuery.hpp>
+#include <USB/AccessoryModeProtocolVersionQuery.hpp>
+#include <USB/AccessoryModeSendStringType.hpp>
 
 
 namespace aasdk {
