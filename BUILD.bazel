@@ -1,0 +1,49 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_proto_grpc_cpp//:defs.bzl", "cpp_proto_compile")
+
+proto_library(
+    name = "protobufs_aap_protobuf",
+    srcs = glob(["protobufs/aap_protobuf/**/*.proto"]), #TODO this needs to be one per .proto file, as recommended by documentation
+    strip_import_prefix = "protobufs",
+)
+
+cpp_proto_compile(
+    name = "protobufs_aap_protobuf_cc_gen",
+    protos = [":protobufs_aap_protobuf"],
+    visibility = ["//OpenAutoSDK:__pkg__"], # Allow OpenAutoSDK package to see this
+)
+
+# cc_library to compile the generated protobuf C++ files
+cc_library(
+    name = "protobufs_aap_protobuf_cc",  # This is the library OpenAutoSDK will depend on
+    srcs = [":protobufs_aap_protobuf_cc_gen"],  # Generated .cc files
+    hdrs = [":protobufs_aap_protobuf_cc_gen"],  # Generated .h files
+    copts = [#TODO: this is kinda patchy, there must be a better way to do this
+        "-I$(GENDIR)/OpenAutoSDK/protobufs_aap_protobuf_cc_gen",
+        "-fPIC",  
+    ],
+    deps = [
+        "@protobuf//:protobuf",  # Or your verified protobuf runtime label
+    ],
+    visibility = ["//OpenAutoSDK:__pkg__"], # Allow OpenAutoSDK package to see this
+)
+
+cc_library(
+    name = "OpenAutoSDK",
+    srcs = glob(["src/**/*.cpp"]),
+    hdrs = glob(["include/aasdk/**/*.hpp"]),
+    strip_include_prefix = "include",
+    includes = ["src", "include/aasdk"],
+    copts = [
+        "-I$(GENDIR)/OpenAutoSDK/protobufs_aap_protobuf_cc_gen",
+    ],
+    deps = [
+        ":protobufs_aap_protobuf_cc",
+        "@boost.asio",
+        "@boost.endian",
+        "@boost.log",
+        "@libusb",
+        ],
+
+    visibility = ["//visibility:public"],
+)
