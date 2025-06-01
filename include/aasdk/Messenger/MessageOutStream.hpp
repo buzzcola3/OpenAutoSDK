@@ -27,11 +27,13 @@
 
 namespace aasdk {
   namespace messenger {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
     class MessageOutStream
         : public IMessageOutStream, public std::enable_shared_from_this<MessageOutStream>, boost::noncopyable {
     public:
-      MessageOutStream(boost::asio::io_service &ioService, transport::ITransport::Pointer transport,
+      MessageOutStream(IoContext &ioContext, transport::ITransport::Pointer transport,
                        ICryptor::Pointer cryptor);
 
       void stream(Message::Pointer message, SendPromise::Pointer promise) override;
@@ -51,7 +53,7 @@ namespace aasdk {
 
       void reset();
 
-      boost::asio::io_service::strand strand_;
+      Strand strand_;
       transport::ITransport::Pointer transport_;
       ICryptor::Pointer cryptor_;
       Message::Pointer message_;

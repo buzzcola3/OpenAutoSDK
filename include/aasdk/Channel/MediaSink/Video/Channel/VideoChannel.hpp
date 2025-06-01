@@ -22,9 +22,10 @@
 namespace aasdk::channel::mediasink::video::channel {
   using aasdk::channel::mediasink::video::VideoMediaSinkService;
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
   class VideoChannel : public VideoMediaSinkService {
   public:
-    VideoChannel(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    VideoChannel(Strand &strand, messenger::IMessenger::Pointer messenger);
   };
 }

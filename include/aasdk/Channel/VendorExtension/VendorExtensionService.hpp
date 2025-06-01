@@ -22,12 +22,13 @@
 
 
 namespace aasdk::channel::vendorextension {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
 
   class VendorExtensionService
       : public IVendorExtensionService, public Channel, public std::enable_shared_from_this<VendorExtensionService> {
   public:
-    VendorExtensionService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    VendorExtensionService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

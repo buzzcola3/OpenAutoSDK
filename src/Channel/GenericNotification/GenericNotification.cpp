@@ -26,7 +26,10 @@
 
 namespace aasdk::channel::genericnotification {
 
-  GenericNotificationService::GenericNotificationService(boost::asio::io_service::strand &strand,
+  using IoContext = boost::asio::io_context;
+  using Strand = boost::asio::strand<IoContext::executor_type>;
+
+  GenericNotificationService::GenericNotificationService(Strand &strand,
                                                          messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::GENERIC_NOTIFICATION) {
 

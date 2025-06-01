@@ -26,11 +26,14 @@
 namespace aasdk {
   namespace usb {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
     class IUSBWrapper;
 
     class USBHub : public IUSBHub, public std::enable_shared_from_this<USBHub>, boost::noncopyable {
     public:
-      USBHub(IUSBWrapper &usbWrapper, boost::asio::io_service &ioService,
+      USBHub(IUSBWrapper &usbWrapper, IoContext &ioContext,
              IAccessoryModeQueryChainFactory &queryChainFactory);
 
       void start(Promise::Pointer promise) override;
@@ -49,7 +52,7 @@ namespace aasdk {
                                       void *uerData);
 
       IUSBWrapper &usbWrapper_;
-      boost::asio::io_service::strand strand_;
+      Strand strand_;
       IAccessoryModeQueryChainFactory &queryChainFactory_;
       Promise::Pointer hotplugPromise_;
       Pointer self_;

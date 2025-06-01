@@ -17,8 +17,10 @@
 
 #include "Channel/MediaSink/Audio/Channel/GuidanceAudioChannel.hpp"
 
+using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
 namespace aasdk::channel::mediasink::audio::channel {
-  GuidanceAudioChannel::GuidanceAudioChannel(boost::asio::io_service::strand &strand,
+  GuidanceAudioChannel::GuidanceAudioChannel(Strand &strand,
                                              messenger::IMessenger::Pointer messenger)
       : AudioMediaSinkService(strand, std::move(messenger), messenger::ChannelId::MEDIA_SINK_GUIDANCE_AUDIO) {
 

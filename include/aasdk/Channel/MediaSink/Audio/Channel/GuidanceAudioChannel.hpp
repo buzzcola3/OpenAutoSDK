@@ -20,11 +20,13 @@
 #include "Channel/MediaSink/Audio/AudioMediaSinkService.hpp"
 
 namespace aasdk::channel::mediasink::audio::channel {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
   using aasdk::channel::mediasink::audio::AudioMediaSinkService;
 
 
   class GuidanceAudioChannel : public AudioMediaSinkService {
   public:
-    GuidanceAudioChannel(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    GuidanceAudioChannel(Strand &strand, messenger::IMessenger::Pointer messenger);
   };
 }

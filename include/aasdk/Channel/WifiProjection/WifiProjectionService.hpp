@@ -22,12 +22,13 @@
 
 
 namespace aasdk::channel::wifiprojection {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
 
   class WifiProjectionService
       : public IWifiProjectionService, public Channel, public std::enable_shared_from_this<WifiProjectionService> {
   public:
-    WifiProjectionService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    WifiProjectionService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

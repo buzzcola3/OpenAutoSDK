@@ -22,16 +22,17 @@
 
 
 namespace aasdk::messenger {
+  using IoContext = boost::asio::io_context;
 
-  MessageInStream::MessageInStream(boost::asio::io_service &ioService, transport::ITransport::Pointer transport,
+  MessageInStream::MessageInStream(IoContext &ioContext, transport::ITransport::Pointer transport,
                                    ICryptor::Pointer cryptor)
-      : strand_(ioService), transport_(std::move(transport)), cryptor_(std::move(cryptor)) {
+      : strand_(ioContext.get_executor()), transport_(std::move(transport)), cryptor_(std::move(cryptor)) {
 
   }
 
   void MessageInStream::startReceive(ReceivePromise::Pointer promise) {
     AASDK_LOG(debug) << "[MessageInStream] startReceiveCalled()";
-    strand_.dispatch([this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
+    boost::asio::dispatch(strand_, [this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
       if (promise_ == nullptr) {
         promise_ = std::move(promise);
         auto transportPromise = transport::ITransport::ReceivePromise::defer(strand_);

@@ -22,8 +22,9 @@
 
 
 namespace aasdk::channel::wifiprojection {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
-  WifiProjectionService::WifiProjectionService(boost::asio::io_service::strand &strand,
+  WifiProjectionService::WifiProjectionService(Strand &strand,
                                                messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::WIFI_PROJECTION) {
 

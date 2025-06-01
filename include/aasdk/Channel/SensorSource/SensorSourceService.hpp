@@ -22,9 +22,11 @@
 
 namespace aasdk::channel::sensorsource {
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
   class SensorSourceService : public ISensorSourceService, public Channel, public std::enable_shared_from_this<SensorSourceService> {
   public:
-    SensorSourceService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    SensorSourceService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

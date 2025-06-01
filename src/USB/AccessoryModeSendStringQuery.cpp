@@ -22,13 +22,15 @@
 
 namespace aasdk {
   namespace usb {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
-    AccessoryModeSendStringQuery::AccessoryModeSendStringQuery(boost::asio::io_service &ioService,
+    AccessoryModeSendStringQuery::AccessoryModeSendStringQuery(IoContext &ioContext,
                                                                IUSBWrapper &usbWrapper,
                                                                IUSBEndpoint::Pointer usbEndpoint,
                                                                AccessoryModeSendStringType sendStringType,
                                                                const std::string &queryValue)
-        : AccessoryModeQuery(ioService, std::move(usbEndpoint)), sendStringType_(std::move(sendStringType)) {
+        : AccessoryModeQuery(ioContext, std::move(usbEndpoint)), sendStringType_(std::move(sendStringType)) {
       data_.resize(8);
       data_.insert(data_.end(), queryValue.begin(), queryValue.end());
       data_.push_back('\0');
@@ -38,7 +40,7 @@ namespace aasdk {
     }
 
     void AccessoryModeSendStringQuery::start(Promise::Pointer promise) {
-      strand_.dispatch([this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
+      boost::asio::dispatch(strand_, [this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
         if (promise_ != nullptr) {
           promise->reject(error::Error(error::ErrorCode::OPERATION_IN_PROGRESS));
         } else {

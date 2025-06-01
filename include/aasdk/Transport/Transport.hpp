@@ -26,10 +26,12 @@
 
 namespace aasdk {
   namespace transport {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
     class Transport : public ITransport, public std::enable_shared_from_this<Transport>, boost::noncopyable {
     public:
-      Transport(boost::asio::io_service &ioService);
+      Transport(IoContext &ioContext);
 
       void receive(size_t size, ReceivePromise::Pointer promise) override;
 
@@ -53,10 +55,10 @@ namespace aasdk {
 
       DataSink receivedDataSink_;
 
-      boost::asio::io_service::strand receiveStrand_;
+      Strand receiveStrand_;
       ReceiveQueue receiveQueue_;
 
-      boost::asio::io_service::strand sendStrand_;
+      Strand sendStrand_;
       SendQueue sendQueue_;
     };
 

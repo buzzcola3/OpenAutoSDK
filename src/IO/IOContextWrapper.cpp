@@ -20,29 +20,31 @@
 
 namespace aasdk {
   namespace io {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
     IOContextWrapper::IOContextWrapper()
-        : ioService_(nullptr), strand_(nullptr) {
+        : ioContext_(nullptr), strand_(nullptr) {
 
     }
 
-    IOContextWrapper::IOContextWrapper(boost::asio::io_service &ioService)
-        : ioService_(&ioService), strand_(nullptr) {
+    IOContextWrapper::IOContextWrapper(IoContext &ioContext)
+        : ioContext_(&ioContext), strand_(nullptr) {
 
     }
 
-    IOContextWrapper::IOContextWrapper(boost::asio::io_service::strand &strand)
-        : ioService_(nullptr), strand_(&strand) {
+    IOContextWrapper::IOContextWrapper(Strand &strand)
+        : ioContext_(nullptr), strand_(&strand) {
 
     }
 
     void IOContextWrapper::reset() {
-      ioService_ = nullptr;
+      ioContext_ = nullptr;
       strand_ = nullptr;
     }
 
     bool IOContextWrapper::isActive() const {
-      return ioService_ != nullptr || strand_ != nullptr;
+      return ioContext_ != nullptr || strand_ != nullptr;
     }
 
   }

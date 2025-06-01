@@ -22,10 +22,12 @@
 
 namespace aasdk::channel::inputsource {
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
   class InputSourceService
       : public IInputSourceService, public Channel, public std::enable_shared_from_this<InputSourceService> {
   public:
-    InputSourceService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    InputSourceService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

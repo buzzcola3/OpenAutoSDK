@@ -25,10 +25,12 @@
 
 namespace aasdk::channel::mediasource {
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
   class MediaSourceService
       : public IMediaSourceService, public Channel, public std::enable_shared_from_this<MediaSourceService> {
   public:
-    MediaSourceService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger,
+    MediaSourceService(Strand &strand, messenger::IMessenger::Pointer messenger,
                        messenger::ChannelId channelId);
 
     // Senders and Receivers

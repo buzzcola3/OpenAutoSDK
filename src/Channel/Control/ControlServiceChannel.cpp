@@ -26,8 +26,11 @@
 namespace aasdk {
   namespace channel {
     namespace control {
+      
+      using IoContext = boost::asio::io_context;
+      using Strand = boost::asio::strand<IoContext::executor_type>;
 
-      ControlServiceChannel::ControlServiceChannel(boost::asio::io_service::strand &strand,
+      ControlServiceChannel::ControlServiceChannel(Strand &strand,
                                                    messenger::IMessenger::Pointer messenger)
           : Channel(strand, messenger, messenger::ChannelId::CONTROL) {
 

@@ -21,11 +21,13 @@
 #include "IBluetoothService.hpp"
 
 namespace aasdk::channel::bluetooth {
+  
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
   class BluetoothService
       : public IBluetoothService, public Channel, public std::enable_shared_from_this<BluetoothService> {
   public:
-    BluetoothService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    BluetoothService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

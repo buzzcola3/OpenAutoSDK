@@ -22,8 +22,10 @@
 namespace aasdk {
   namespace usb {
 
-    AccessoryModeQuery::AccessoryModeQuery(boost::asio::io_service &ioService, IUSBEndpoint::Pointer usbEndpoint)
-        : strand_(ioService), usbEndpoint_(std::move(usbEndpoint)) {
+    using IoContext = boost::asio::io_context;
+
+    AccessoryModeQuery::AccessoryModeQuery(IoContext &ioContext, IUSBEndpoint::Pointer usbEndpoint)
+        : strand_(ioContext.get_executor()), usbEndpoint_(std::move(usbEndpoint)) {
 
     }
 

@@ -24,11 +24,13 @@
 
 namespace aasdk {
   namespace usb {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
     class AccessoryModeSendStringQuery
         : public AccessoryModeQuery, public std::enable_shared_from_this<AccessoryModeSendStringQuery> {
     public:
-      AccessoryModeSendStringQuery(boost::asio::io_service &ioService, IUSBWrapper &usbWrapper,
+      AccessoryModeSendStringQuery(IoContext &ioContext, IUSBWrapper &usbWrapper,
                                    IUSBEndpoint::Pointer usbEndpoint,
                                    AccessoryModeSendStringType sendStringType, const std::string &queryValue);
 

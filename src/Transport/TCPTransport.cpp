@@ -20,9 +20,10 @@
 
 namespace aasdk {
   namespace transport {
+    using IoContext = boost::asio::io_context;
 
-    TCPTransport::TCPTransport(boost::asio::io_service &ioService, tcp::ITCPEndpoint::Pointer tcpEndpoint)
-        : Transport(ioService), tcpEndpoint_(std::move(tcpEndpoint)) {
+    TCPTransport::TCPTransport(IoContext &ioContext, tcp::ITCPEndpoint::Pointer tcpEndpoint)
+        : Transport(ioContext), tcpEndpoint_(std::move(tcpEndpoint)) {
 
     }
 

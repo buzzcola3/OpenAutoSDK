@@ -22,8 +22,9 @@
 
 
 namespace aasdk::channel::sensorsource {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
-  SensorSourceService::SensorSourceService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger)
+  SensorSourceService::SensorSourceService(Strand &strand, messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::SENSOR) {
 
   }

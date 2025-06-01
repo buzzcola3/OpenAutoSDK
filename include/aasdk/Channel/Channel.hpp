@@ -25,9 +25,12 @@
 
 namespace aasdk {
   namespace channel {
+
+    using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+    
     class Channel : public virtual IChannel {
     public:
-      Channel(boost::asio::io_service::strand &strand,
+      Channel(Strand &strand,
               messenger::IMessenger::Pointer messenger,
               messenger::ChannelId channelId);
 
@@ -38,7 +41,7 @@ namespace aasdk {
       void send(messenger::Message::Pointer message, SendPromise::Pointer promise) override;
 
     protected:
-      boost::asio::io_service::strand &strand_;
+      Strand &strand_;
       messenger::IMessenger::Pointer messenger_;
       messenger::ChannelId channelId_;
     };

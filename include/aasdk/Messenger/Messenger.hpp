@@ -28,10 +28,12 @@
 
 namespace aasdk {
   namespace messenger {
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
 
     class Messenger : public IMessenger, public std::enable_shared_from_this<Messenger>, boost::noncopyable {
     public:
-      Messenger(boost::asio::io_service &ioService, IMessageInStream::Pointer messageInStream,
+      Messenger(IoContext &ioContext, IMessageInStream::Pointer messageInStream,
                 IMessageOutStream::Pointer messageOutStream);
 
       void enqueueReceive(ChannelId channelId, ReceivePromise::Pointer promise) override;
@@ -54,8 +56,8 @@ namespace aasdk {
 
       void rejectSendPromiseQueue(const error::Error &e);
 
-      boost::asio::io_service::strand receiveStrand_;
-      boost::asio::io_service::strand sendStrand_;
+      Strand receiveStrand_;
+      Strand sendStrand_;
       IMessageInStream::Pointer messageInStream_;
       IMessageOutStream::Pointer messageOutStream_;
 

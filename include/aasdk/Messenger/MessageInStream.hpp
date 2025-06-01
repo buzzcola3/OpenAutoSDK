@@ -29,10 +29,13 @@
 namespace aasdk {
   namespace messenger {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
     class MessageInStream
         : public IMessageInStream, public std::enable_shared_from_this<MessageInStream>, boost::noncopyable {
     public:
-      MessageInStream(boost::asio::io_service &ioService, transport::ITransport::Pointer transport,
+      MessageInStream(IoContext &ioContext, transport::ITransport::Pointer transport,
                       ICryptor::Pointer cryptor);
 
       void startReceive(ReceivePromise::Pointer promise) override;
@@ -46,7 +49,7 @@ namespace aasdk {
 
       void receiveFramePayloadHandler(const common::DataConstBuffer &buffer);
 
-      boost::asio::io_service::strand strand_;
+      Strand strand_;
       transport::ITransport::Pointer transport_;
       ICryptor::Pointer cryptor_;
 

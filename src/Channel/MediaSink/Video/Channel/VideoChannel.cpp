@@ -18,8 +18,10 @@
 #include "Channel/MediaSink/Video/Channel/VideoChannel.hpp"
 
 namespace aasdk::channel::mediasink::video::channel {
-
-  VideoChannel::VideoChannel(boost::asio::io_service::strand &strand,
+  
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+  
+  VideoChannel::VideoChannel(Strand &strand,
                              messenger::IMessenger::Pointer messenger)
       : VideoMediaSinkService(strand, std::move(messenger), messenger::ChannelId::MEDIA_SINK_VIDEO) {
 

@@ -24,8 +24,9 @@
  */
 
 namespace aasdk::channel::vendorextension {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
-  VendorExtensionService::VendorExtensionService(boost::asio::io_service::strand &strand,
+  VendorExtensionService::VendorExtensionService(Strand &strand,
                                                  messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::VENDOR_EXTENSION) {
 

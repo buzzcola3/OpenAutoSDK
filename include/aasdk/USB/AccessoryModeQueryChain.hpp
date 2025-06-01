@@ -25,6 +25,9 @@
 namespace aasdk {
   namespace usb {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+    
     class IAccessoryModeQueryFactory;
 
     class AccessoryModeQueryChain
@@ -33,7 +36,7 @@ namespace aasdk {
           boost::noncopyable {
     public:
       AccessoryModeQueryChain(IUSBWrapper &usbWrapper,
-                              boost::asio::io_service &ioService,
+                              IoContext &ioContext,
                               IAccessoryModeQueryFactory &queryFactory);
 
       void start(DeviceHandle handle, Promise::Pointer promise) override;
@@ -63,7 +66,8 @@ namespace aasdk {
       void startQueryHandler(IUSBEndpoint::Pointer usbEndpoint);
 
       IUSBWrapper &usbWrapper_;
-      boost::asio::io_service::strand strand_;
+      IoContext &ioContext_;
+      Strand strand_;
       IAccessoryModeQueryFactory &queryFactory_;
       DeviceHandle handle_;
       Promise::Pointer promise_;

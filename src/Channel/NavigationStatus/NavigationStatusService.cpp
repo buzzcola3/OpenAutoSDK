@@ -26,7 +26,9 @@
 
 namespace aasdk::channel::navigationstatus {
 
-  NavigationStatusService::NavigationStatusService(boost::asio::io_service::strand &strand,
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
+  NavigationStatusService::NavigationStatusService(Strand &strand,
                                                    messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::NAVIGATION_STATUS) {
 

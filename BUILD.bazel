@@ -30,19 +30,26 @@ cc_library(
 
 cc_library(
     name = "OpenAutoSDK",
-    srcs = glob(["src/**/*.cpp"]),
+    srcs = glob(
+        ["src/**/*.cpp"],
+        exclude = ["src/**/*.ut.cpp"],  # Exclude unit test files
+        ),
     hdrs = glob(["include/aasdk/**/*.hpp"]),
     strip_include_prefix = "include",
     includes = ["src", "include/aasdk"],
     copts = [
         "-I$(GENDIR)/OpenAutoSDK/protobufs_aap_protobuf_cc_gen",
+        "-fPIC",
     ],
     deps = [
         ":protobufs_aap_protobuf_cc",
         "@boost.asio",
         "@boost.endian",
         "@boost.log",
+        "@boost.circular_buffer",
         "@libusb",
+        "@openssl",
+        "@googletest//:gtest",
         ],
 
     visibility = ["//visibility:public"],

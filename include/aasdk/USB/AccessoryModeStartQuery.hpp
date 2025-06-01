@@ -22,11 +22,12 @@
 
 namespace aasdk {
   namespace usb {
+    using IoContext = boost::asio::io_context;
 
     class AccessoryModeStartQuery
         : public AccessoryModeQuery, public std::enable_shared_from_this<AccessoryModeStartQuery> {
     public:
-      AccessoryModeStartQuery(boost::asio::io_service &ioService, IUSBWrapper &usbWrapper,
+      AccessoryModeStartQuery(IoContext &ioContext, IUSBWrapper &usbWrapper,
                               IUSBEndpoint::Pointer usbEndpoint);
 
       void start(Promise::Pointer promise) override;

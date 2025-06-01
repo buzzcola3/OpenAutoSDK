@@ -25,13 +25,15 @@
 namespace aasdk {
   namespace usb {
 
-    USBHub::USBHub(IUSBWrapper &usbWrapper, boost::asio::io_service &ioService,
+    using IoContext = boost::asio::io_context;
+
+    USBHub::USBHub(IUSBWrapper &usbWrapper, IoContext &ioContext,
                    IAccessoryModeQueryChainFactory &queryChainFactory)
-        : usbWrapper_(usbWrapper), strand_(ioService), queryChainFactory_(queryChainFactory) {
+        : usbWrapper_(usbWrapper), strand_(ioContext.get_executor()), queryChainFactory_(queryChainFactory) {
     }
 
     void USBHub::start(Promise::Pointer promise) {
-      strand_.dispatch([this, self = this->shared_from_this(), promise = std::move(promise)]() {
+      boost::asio::dispatch(strand_, [this, self = this->shared_from_this(), promise = std::move(promise)]() {
         if (hotplugPromise_ != nullptr) {
           hotplugPromise_->reject(error::Error(error::ErrorCode::OPERATION_ABORTED));
           hotplugPromise_.reset();
@@ -52,7 +54,7 @@ namespace aasdk {
     }
 
     void USBHub::cancel() {
-      strand_.dispatch([this, self = this->shared_from_this()]() mutable {
+      boost::asio::dispatch(strand_, [this, self = this->shared_from_this()]() mutable {
         if (hotplugPromise_ != nullptr) {
           hotplugPromise_->reject(error::Error(error::ErrorCode::OPERATION_ABORTED));
           hotplugPromise_.reset();
@@ -72,7 +74,7 @@ namespace aasdk {
                                      void *userData) {
       if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
         auto self = reinterpret_cast<USBHub *>(userData)->shared_from_this();
-        self->strand_.dispatch(std::bind(&USBHub::handleDevice, self, device));
+        boost::asio::dispatch(self->strand_, std::bind(&USBHub::handleDevice, self, device));
       }
 
       return 0;

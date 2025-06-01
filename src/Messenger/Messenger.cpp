@@ -19,10 +19,11 @@
 #include <Common/Log.hpp>
 
 namespace aasdk::messenger {
+  using IoContext = boost::asio::io_context;
 
-  Messenger::Messenger(boost::asio::io_service &ioService, IMessageInStream::Pointer messageInStream,
+  Messenger::Messenger(IoContext &ioContext, IMessageInStream::Pointer messageInStream,
                        IMessageOutStream::Pointer messageOutStream)
-      : receiveStrand_(ioService), sendStrand_(ioService), messageInStream_(std::move(messageInStream)),
+      : receiveStrand_(ioContext.get_executor()), sendStrand_(ioContext.get_executor()), messageInStream_(std::move(messageInStream)),
         messageOutStream_(std::move(messageOutStream)) {
 
   }
@@ -31,7 +32,7 @@ namespace aasdk::messenger {
     AASDK_LOG(debug) << "[Messenger::enqueueReceive] Called on channel " << channelIdToString(channelId);
 
     // enqueueReceive is called from the service channel.
-    receiveStrand_.dispatch([this, self = this->shared_from_this(), channelId, promise = std::move(promise)]() mutable {
+    boost::asio::dispatch(receiveStrand_, [this, self = this->shared_from_this(), channelId, promise = std::move(promise)]() mutable {
       //If there's any messages on the service, resolve. The service will call enqueueReceive again.
       if (!channelReceiveMessageQueue_.empty(channelId)) {
         AASDK_LOG(debug) << "[Messenger::enqueueReceive] Message queue not empty, resolving message first.";
@@ -53,7 +54,7 @@ namespace aasdk::messenger {
   }
 
   void Messenger::enqueueSend(Message::Pointer message, SendPromise::Pointer promise) {
-    sendStrand_.dispatch(
+    boost::asio::dispatch(sendStrand_,
         [this, self = this->shared_from_this(), message = std::move(message), promise = std::move(promise)]() mutable {
           channelSendPromiseQueue_.emplace_back(std::make_pair(std::move(message), std::move(promise)));
 
@@ -122,7 +123,7 @@ namespace aasdk::messenger {
   }
 
   void Messenger::stop() {
-    receiveStrand_.dispatch([this, self = this->shared_from_this()]() {
+    boost::asio::dispatch(receiveStrand_, [this, self = this->shared_from_this()]() {
       channelReceiveMessageQueue_.clear();
     });
   }

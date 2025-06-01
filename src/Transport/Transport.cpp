@@ -22,12 +22,12 @@
 namespace aasdk {
   namespace transport {
 
-    Transport::Transport(boost::asio::io_service &ioService)
-        : receiveStrand_(ioService), sendStrand_(ioService) {}
+    Transport::Transport(IoContext &ioContext)
+        : receiveStrand_(ioContext.get_executor()), sendStrand_(ioContext.get_executor()) {}
 
     void Transport::receive(size_t size, ReceivePromise::Pointer promise) {
       AASDK_LOG(debug) << "[Transport] receive()";
-      receiveStrand_.dispatch([this, self = this->shared_from_this(), size, promise = std::move(promise)]() mutable {
+      boost::asio::dispatch(receiveStrand_, [this, self = this->shared_from_this(), size, promise = std::move(promise)]() mutable {
         receiveQueue_.emplace_back(std::make_pair(size, std::move(promise)));
 
         if (receiveQueue_.size() == 1) {
@@ -84,7 +84,7 @@ namespace aasdk {
     }
 
     void Transport::send(common::Data data, SendPromise::Pointer promise) {
-      sendStrand_.dispatch(
+      boost::asio::dispatch(sendStrand_,
           [this, self = this->shared_from_this(), data = std::move(data), promise = std::move(promise)]() mutable {
             sendQueue_.emplace_back(std::make_pair(std::move(data), std::move(promise)));
 

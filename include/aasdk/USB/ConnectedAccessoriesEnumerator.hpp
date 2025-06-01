@@ -26,10 +26,13 @@
 namespace aasdk {
   namespace usb {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
     class ConnectedAccessoriesEnumerator
         : public IConnectedAccessoriesEnumerator, public std::enable_shared_from_this<ConnectedAccessoriesEnumerator> {
     public:
-      ConnectedAccessoriesEnumerator(IUSBWrapper &usbWrapper, boost::asio::io_service &ioService,
+      ConnectedAccessoriesEnumerator(IUSBWrapper &usbWrapper, IoContext &ioContext,
                                      IAccessoryModeQueryChainFactory &queryChainFactory);
 
       void enumerate(Promise::Pointer promise) override;
@@ -46,7 +49,7 @@ namespace aasdk {
       void reset();
 
       IUSBWrapper &usbWrapper_;
-      boost::asio::io_service::strand strand_;
+      Strand strand_;
       IAccessoryModeQueryChainFactory &queryChainFactory_;
       IAccessoryModeQueryChain::Pointer queryChain_;
       Promise::Pointer promise_;

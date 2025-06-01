@@ -27,7 +27,7 @@ namespace aasdk {
 
     class USBTransport : public Transport {
     public:
-      USBTransport(boost::asio::io_service &ioService, usb::IAOAPDevice::Pointer aoapDevice);
+      USBTransport(IoContext &ioContext, usb::IAOAPDevice::Pointer aoapDevice);
 
       void stop() override;
 

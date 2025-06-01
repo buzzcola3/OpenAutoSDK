@@ -23,7 +23,9 @@
 
 namespace aasdk::channel::inputsource {
 
-  InputSourceService::InputSourceService(boost::asio::io_service::strand &strand,
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
+  InputSourceService::InputSourceService(Strand &strand,
                                          messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::INPUT_SOURCE) {
 

@@ -22,10 +22,12 @@
 namespace aasdk::channel::mediasink::audio::channel {
   using aasdk::channel::mediasink::audio::AudioMediaSinkService;
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
 
   class TelephonyAudioChannel : public AudioMediaSinkService {
   public:
-    TelephonyAudioChannel(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    TelephonyAudioChannel(Strand &strand, messenger::IMessenger::Pointer messenger);
   };
 }
 

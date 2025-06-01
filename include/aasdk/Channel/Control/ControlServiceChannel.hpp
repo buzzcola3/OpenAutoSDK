@@ -25,10 +25,13 @@
 
 namespace aasdk::channel::control {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
   class ControlServiceChannel
       : public IControlServiceChannel, public Channel, public std::enable_shared_from_this<ControlServiceChannel> {
   public:
-    ControlServiceChannel(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    ControlServiceChannel(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

@@ -23,11 +23,12 @@
 
 namespace aasdk::channel::mediabrowser {
 
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
   class MediaBrowserService
       : public IMediaBrowserService, public Channel, public std::enable_shared_from_this<MediaBrowserService> {
   public:
-    MediaBrowserService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    MediaBrowserService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

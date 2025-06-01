@@ -22,12 +22,13 @@
 
 
 namespace aasdk::channel::navigationstatus {
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
 
 
   class NavigationStatusService
       : public INavigationStatusService, public Channel, public std::enable_shared_from_this<NavigationStatusService> {
   public:
-    NavigationStatusService(boost::asio::io_service::strand &strand, messenger::IMessenger::Pointer messenger);
+    NavigationStatusService(Strand &strand, messenger::IMessenger::Pointer messenger);
 
     // Senders and Receivers
 

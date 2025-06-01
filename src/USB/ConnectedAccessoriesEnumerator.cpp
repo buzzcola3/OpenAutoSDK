@@ -21,15 +21,18 @@
 namespace aasdk {
   namespace usb {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
     ConnectedAccessoriesEnumerator::ConnectedAccessoriesEnumerator(IUSBWrapper &usbWrapper,
-                                                                   boost::asio::io_service &ioService,
+                                                                   IoContext &ioContext,
                                                                    IAccessoryModeQueryChainFactory &queryChainFactory)
-        : usbWrapper_(usbWrapper), strand_(ioService), queryChainFactory_(queryChainFactory) {
+        : usbWrapper_(usbWrapper), strand_(ioContext.get_executor()), queryChainFactory_(queryChainFactory) {
 
     }
 
     void ConnectedAccessoriesEnumerator::enumerate(Promise::Pointer promise) {
-      strand_.dispatch([this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
+      boost::asio::dispatch(strand_, [this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
         if (promise_ != nullptr) {
           promise->reject(error::Error(error::ErrorCode::OPERATION_IN_PROGRESS));
         } else {
@@ -50,7 +53,7 @@ namespace aasdk {
     }
 
     void ConnectedAccessoriesEnumerator::cancel() {
-      strand_.dispatch([this, self = this->shared_from_this()]() mutable {
+      boost::asio::dispatch(strand_, [this, self = this->shared_from_this()]() mutable {
         if (queryChain_ != nullptr) {
           queryChain_->cancel();
         }

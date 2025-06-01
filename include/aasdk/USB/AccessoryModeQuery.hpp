@@ -28,14 +28,17 @@
 namespace aasdk {
   namespace usb {
 
+    using IoContext = boost::asio::io_context;
+    using Strand = boost::asio::strand<IoContext::executor_type>;
+
     class AccessoryModeQuery : public IAccessoryModeQuery, boost::noncopyable {
     public:
-      AccessoryModeQuery(boost::asio::io_service &ioService, IUSBEndpoint::Pointer usbEndpoint);
+      AccessoryModeQuery(IoContext &ioContext, IUSBEndpoint::Pointer usbEndpoint);
 
       void cancel() override;
 
     protected:
-      boost::asio::io_service::strand strand_;
+      Strand strand_;
       IUSBEndpoint::Pointer usbEndpoint_;
       common::Data data_;
       Promise::Pointer promise_;

@@ -26,7 +26,9 @@
 
 namespace aasdk::channel::mediaplaybackstatus {
 
-  MediaPlaybackStatusService::MediaPlaybackStatusService(boost::asio::io_service::strand &strand,
+  using Strand = boost::asio::strand<boost::asio::io_context::executor_type>;
+
+  MediaPlaybackStatusService::MediaPlaybackStatusService(Strand &strand,
                                                          messenger::IMessenger::Pointer messenger)
       : Channel(strand, std::move(messenger), messenger::ChannelId::MEDIA_PLAYBACK_STATUS) {
 
