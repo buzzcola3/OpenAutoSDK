@@ -23,7 +23,7 @@ cc_library(
         "-fPIC",  
     ],
     deps = [
-        "@protobuf//:protobuf",  # Or your verified protobuf runtime label
+        "@protobuf//:protobuf",
     ],
     visibility = ["//OpenAutoSDK:__pkg__"], # Allow OpenAutoSDK package to see this
 )

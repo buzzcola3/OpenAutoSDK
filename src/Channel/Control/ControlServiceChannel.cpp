@@ -244,12 +244,14 @@ namespace aasdk {
         //const size_t elements = payload.size / sizeof(uint16_t);
         const uint16_t *versionResponse = reinterpret_cast<const uint16_t *>(payload.cdata);
 
+        const uint16_t majorVersion = boost::endian::big_to_native(versionResponse[0]);
+        const uint16_t minorVersion = boost::endian::big_to_native(versionResponse[1]);
         aap_protobuf::shared::MessageStatus status = static_cast<aap_protobuf::shared::MessageStatus>(boost::endian::big_to_native(
             versionResponse[2]));
-        AASDK_LOG(info) << "[ControlServiceChannel] Handling Version - Major: " << versionResponse[0] << " Minor: "
-                        << versionResponse[1] << "Status: " << status;
+        AASDK_LOG(info) << "[ControlServiceChannel] Handling Version - Major: " << majorVersion << " Minor: "
+                        << minorVersion << " Status: " << status;
 
-        eventHandler->onVersionResponse(versionResponse[0], versionResponse[1], status);
+        eventHandler->onVersionResponse(majorVersion, minorVersion, status);
       }
 
       void ControlServiceChannel::handleServiceDiscoveryRequest(const common::DataConstBuffer &payload,
