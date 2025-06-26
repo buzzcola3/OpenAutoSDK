@@ -15,11 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <thread>
+#include <chrono>
 #include <USB/IUSBWrapper.hpp>
 #include <USB/USBHub.hpp>
 #include <USB/AccessoryModeQueryChain.hpp>
 #include <Error/Error.hpp>
+#include <Common/Log.hpp>
 
 
 namespace aasdk {
@@ -29,7 +30,7 @@ namespace aasdk {
 
     USBHub::USBHub(IUSBWrapper &usbWrapper, IoContext &ioContext,
                    IAccessoryModeQueryChainFactory &queryChainFactory)
-        : usbWrapper_(usbWrapper), strand_(ioContext.get_executor()), queryChainFactory_(queryChainFactory) {
+        : usbWrapper_(usbWrapper), strand_(ioContext.get_executor()), retryTimer_(ioContext), queryChainFactory_(queryChainFactory) {
     }
 
     void USBHub::start(Promise::Pointer promise) {
@@ -75,6 +76,7 @@ namespace aasdk {
       if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
         auto self = reinterpret_cast<USBHub *>(userData)->shared_from_this();
         boost::asio::dispatch(self->strand_, std::bind(&USBHub::handleDevice, self, device));
+        AASDK_LOG(debug) << "[USBHub] hotplugEventsHandler()";
       }
 
       return 0;
@@ -90,26 +92,43 @@ namespace aasdk {
         return;
       }
 
+      // Start the retry process with 5 attempts.
+      attemptToHandleDevice(device, 5);
+    }
+
+    void USBHub::attemptToHandleDevice(libusb_device* device, int retriesLeft) {
+      if (retriesLeft <= 0) {
+        AASDK_LOG(error) << "[USBHub] Failed to open device after multiple retries.";
+        return;
+      }
+
       libusb_device_descriptor deviceDescriptor;
       if (usbWrapper_.getDeviceDescriptor(device, deviceDescriptor) != 0) {
+        AASDK_LOG(debug) << "[USBHub] Failed to get device descriptor. Retries left: " << (retriesLeft - 1);
+        retryTimer_.expires_after(std::chrono::milliseconds(200));
+        retryTimer_.async_wait(boost::asio::bind_executor(strand_, [this, self = this->shared_from_this(), device, retriesLeft](const boost::system::error_code& /*ec*/) {
+            attemptToHandleDevice(device, retriesLeft - 1);
+        }));
         return;
       }
 
       DeviceHandle handle;
       auto openResult = usbWrapper_.open(device, handle);
-
       if (openResult != 0) {
+        AASDK_LOG(debug) << "[USBHub] Failed to open device. Retries left: " << (retriesLeft - 1);
+        retryTimer_.expires_after(std::chrono::milliseconds(200));
+        retryTimer_.async_wait(boost::asio::bind_executor(strand_, [this, self = this->shared_from_this(), device, retriesLeft](const boost::system::error_code& /*ec*/) {
+            attemptToHandleDevice(device, retriesLeft - 1);
+        }));
         return;
       }
+
+      AASDK_LOG(debug) << "[USBHub] handleDevice() - Device opened successfully.";
 
       if (this->isAOAPDevice(deviceDescriptor)) {
         hotplugPromise_->resolve(std::move(handle));
         hotplugPromise_.reset();
       } else {
-        ////////// Workaround for VMware
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        //////////
-
         queryChainQueue_.emplace_back(queryChainFactory_.create());
 
         auto queueElementIter = std::prev(queryChainQueue_.end());

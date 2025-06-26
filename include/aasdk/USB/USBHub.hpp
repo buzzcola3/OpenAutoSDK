@@ -18,6 +18,7 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <list>
 #include <USB/IUSBHub.hpp>
 #include <USB/IAccessoryModeQueryChainFactory.hpp>
@@ -45,6 +46,7 @@ namespace aasdk {
       using std::enable_shared_from_this<USBHub>::shared_from_this;
 
       void handleDevice(libusb_device *device);
+      void attemptToHandleDevice(libusb_device* device, int retriesLeft);
 
       bool isAOAPDevice(const libusb_device_descriptor &deviceDescriptor) const;
 
@@ -53,6 +55,7 @@ namespace aasdk {
 
       IUSBWrapper &usbWrapper_;
       Strand strand_;
+      boost::asio::steady_timer retryTimer_;
       IAccessoryModeQueryChainFactory &queryChainFactory_;
       Promise::Pointer hotplugPromise_;
       Pointer self_;
