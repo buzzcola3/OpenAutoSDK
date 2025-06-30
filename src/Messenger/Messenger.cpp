@@ -54,6 +54,7 @@ namespace aasdk::messenger {
   }
 
   void Messenger::enqueueSend(Message::Pointer message, SendPromise::Pointer promise) {
+    AASDK_LOG(info) << "[MESSENGER] TX -> Channel: " << static_cast<int>(message->getChannelId()) << ", Type: " << static_cast<int>(message->getType()) << ", Enc: " << static_cast<int>(message->getEncryptionType()) << ", Size: " << message->getPayload().size();
     boost::asio::dispatch(sendStrand_,
         [this, self = this->shared_from_this(), message = std::move(message), promise = std::move(promise)]() mutable {
           channelSendPromiseQueue_.emplace_back(std::make_pair(std::move(message), std::move(promise)));
@@ -65,6 +66,7 @@ namespace aasdk::messenger {
   }
 
   void Messenger::inStreamMessageHandler(Message::Pointer message) {
+    AASDK_LOG(info) << "[MESSENGER] RX <- Channel: " << static_cast<int>(message->getChannelId()) << ", Type: " << static_cast<int>(message->getType()) << ", Enc: " << static_cast<int>(message->getEncryptionType()) << ", Size: " << message->getPayload().size();
     auto channelId = message->getChannelId();
     AASDK_LOG(debug) << "[Messenger::inStreamMessageHandler] Handling message for ChannelId "
                      << channelIdToString(message->getChannelId());

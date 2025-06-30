@@ -18,6 +18,15 @@
 #include <Common/Log.hpp>
 #include <Transport/Transport.hpp>
 
+// Uncomment the line below to enable detailed debug logging for this service
+// #define OAE_TRANSPORT_DEBUG
+
+#ifdef OAE_TRANSPORT_DEBUG
+#define TRANSPORT_LOG_DEBUG(x) AASDK_LOG(debug) << "[Transport] " << x
+#else
+#define TRANSPORT_LOG_DEBUG(x) do {} while (0)
+#endif
+
 
 namespace aasdk {
   namespace transport {
@@ -26,18 +35,18 @@ namespace aasdk {
         : receiveStrand_(ioContext.get_executor()), sendStrand_(ioContext.get_executor()) {}
 
     void Transport::receive(size_t size, ReceivePromise::Pointer promise) {
-      AASDK_LOG(debug) << "[Transport] receive()";
+      TRANSPORT_LOG_DEBUG("receive()");
       boost::asio::dispatch(receiveStrand_, [this, self = this->shared_from_this(), size, promise = std::move(promise)]() mutable {
         receiveQueue_.emplace_back(std::make_pair(size, std::move(promise)));
 
         if (receiveQueue_.size() == 1) {
           try {
-            AASDK_LOG(debug) << "[Transport] Distribute received data.";
+            TRANSPORT_LOG_DEBUG("Distribute received data.");
             this->distributeReceivedData();
           }
           catch (const error::Error &e) {
             // Due to the design of the messaging system, we don't really need to raise an error - debug it is
-            AASDK_LOG(debug) << "[Transport] Reject receive promise.";
+            TRANSPORT_LOG_DEBUG("Reject receive promise.");
             this->rejectReceivePromises(e);
           }
         }
@@ -46,29 +55,29 @@ namespace aasdk {
 
     void Transport::receiveHandler(size_t bytesTransferred) {
       try {
-        AASDK_LOG(debug) << "[Transport] receiveHandler()";
+        TRANSPORT_LOG_DEBUG("receiveHandler()");
         receivedDataSink_.commit(bytesTransferred);
         this->distributeReceivedData();
       }
       catch (const error::Error &e) {
         // Due to the design of the messaging system, we don't really need to raise an error - debug it is
-        AASDK_LOG(debug) << "[Transport] Rejecting promise.";
+        TRANSPORT_LOG_DEBUG("Rejecting promise.");
         this->rejectReceivePromises(e);
       }
     }
 
     void Transport::distributeReceivedData() {
-      AASDK_LOG(debug) << "[Transport] distributeReceivedData()";
+      TRANSPORT_LOG_DEBUG("distributeReceivedData()");
       for (auto queueElement = receiveQueue_.begin(); queueElement != receiveQueue_.end();) {
         if (receivedDataSink_.getAvailableSize() < queueElement->first) {
-          AASDK_LOG(debug) << "[Transport] Receiving from buffer.";
+          TRANSPORT_LOG_DEBUG("Receiving from buffer.");
           auto buffer = receivedDataSink_.fill();
           this->enqueueReceive(std::move(buffer));
 
           break;
         } else {
           auto data(receivedDataSink_.consume(queueElement->first));
-          AASDK_LOG(debug) << "[Transport] Resolve and clear message.";
+          TRANSPORT_LOG_DEBUG("Resolve and clear message.");
           queueElement->second->resolve(std::move(data));
           queueElement = receiveQueue_.erase(queueElement);
         }
