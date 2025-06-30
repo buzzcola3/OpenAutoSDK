@@ -17,7 +17,15 @@
 
 #include <Channel/VendorExtension/IVendorExtensionServiceEventHandler.hpp>
 #include <Channel/VendorExtension/VendorExtensionService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define VENDOR_EXTENSION_SERVICE_LOG_ENABLED
+
+#ifndef VENDOR_EXTENSION_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Vendor Extension channel to link to a known Vendor App on the Mobile Phone.
@@ -34,7 +42,7 @@ namespace aasdk::channel::vendorextension {
 
   void VendorExtensionService::receive(IVendorExtensionServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[VendorExtensionService] receive()";
+    SDK_LOG_DEBUG("[VendorExtensionService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&VendorExtensionService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -46,7 +54,7 @@ namespace aasdk::channel::vendorextension {
 
   void VendorExtensionService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                        SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[VendorExtensionService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[VendorExtensionService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -60,7 +68,7 @@ namespace aasdk::channel::vendorextension {
   void VendorExtensionService::messageHandler(messenger::Message::Pointer message,
                                               IVendorExtensionServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[VendorExtensionService] remessageHandlerceive()";
+    SDK_LOG_DEBUG("[VendorExtensionService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -70,7 +78,7 @@ namespace aasdk::channel::vendorextension {
         this->handleChannelOpenRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[VendorExtensionService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[VendorExtensionService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -78,7 +86,7 @@ namespace aasdk::channel::vendorextension {
 
   void VendorExtensionService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                         IVendorExtensionServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VendorExtensionService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[VendorExtensionService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

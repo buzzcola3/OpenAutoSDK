@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/media/sink/MediaMessageId.pb.h>
 #include <Channel//MediaSink/Video/IVideoMediaSinkServiceEventHandler.hpp>
 #include <Channel/MediaSink/Video/VideoMediaSinkService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define VIDEO_MEDIA_SINK_SERVICE_LOG_ENABLED
+
+#ifndef VIDEO_MEDIA_SINK_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * TODO: Merge Audio and Video Sink Service - P4
@@ -38,7 +46,7 @@ namespace aasdk::channel::mediasink::video {
   }
 
   void VideoMediaSinkService::receive(IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] receive()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&VideoMediaSinkService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -50,7 +58,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -63,7 +71,7 @@ namespace aasdk::channel::mediasink::video {
   void VideoMediaSinkService::sendChannelSetupResponse(
       const aap_protobuf::service::media::shared::message::Config &response,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] sendChannelSetupResponse()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] sendChannelSetupResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(
@@ -77,7 +85,7 @@ namespace aasdk::channel::mediasink::video {
   void VideoMediaSinkService::sendMediaAckIndication(
       const aap_protobuf::service::media::source::message::Ack &indication,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] sendMediaAckIndication()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] sendMediaAckIndication()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(
@@ -91,7 +99,7 @@ namespace aasdk::channel::mediasink::video {
   void VideoMediaSinkService::sendVideoFocusIndication(
       const aap_protobuf::service::media::video::message::VideoFocusNotification &indication,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] sendVideoFocusIndication()";
+    //SDK_LOG_DEBUG("[VideoMediaSinkService] sendVideoFocusIndication()");
 
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED, messenger::MessageType::SPECIFIC));
     message->insertPayload(messenger::MessageId(aap_protobuf::service::media::sink::MediaMessageId::MEDIA_MESSAGE_VIDEO_FOCUS_NOTIFICATION).getData());
@@ -102,7 +110,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::messageHandler(messenger::Message::Pointer message,
                                              IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] messageHandler()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] messageHandler()");
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
 
@@ -129,7 +137,7 @@ namespace aasdk::channel::mediasink::video {
         this->handleVideoFocusRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[VideoMediaSinkService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[VideoMediaSinkService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -137,7 +145,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleChannelSetupRequest(const common::DataConstBuffer &payload,
                                                         IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleChannelSetupRequest()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleChannelSetupRequest()");
     aap_protobuf::service::media::shared::message::Setup request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onMediaChannelSetupRequest(request);
@@ -148,7 +156,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleStartIndication(const common::DataConstBuffer &payload,
                                                     IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleStartIndication()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleStartIndication()");
     aap_protobuf::service::media::shared::message::Start indication;
     if (indication.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onMediaChannelStartIndication(indication);
@@ -159,7 +167,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleStopIndication(const common::DataConstBuffer &payload,
                                                    IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleStopIndication()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleStopIndication()");
     aap_protobuf::service::media::shared::message::Stop indication;
     if (indication.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onMediaChannelStopIndication(indication);
@@ -170,7 +178,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                        IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);
@@ -181,7 +189,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleMediaWithTimestampIndication(const common::DataConstBuffer &payload,
                                                                  IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleMediaWithTimestampIndication()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleMediaWithTimestampIndication()");
     if (payload.size >= sizeof(messenger::Timestamp::ValueType)) {
       messenger::Timestamp timestamp(payload);
       eventHandler->onMediaWithTimestampIndication(timestamp.getValue(),
@@ -194,7 +202,7 @@ namespace aasdk::channel::mediasink::video {
 
   void VideoMediaSinkService::handleVideoFocusRequest(const common::DataConstBuffer &payload,
                                                       IVideoMediaSinkServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[VideoMediaSinkService] handleVideoFocusRequest()";
+    SDK_LOG_DEBUG("[VideoMediaSinkService] handleVideoFocusRequest()");
     aap_protobuf::service::media::video::message::VideoFocusRequestNotification request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onVideoFocusRequest(request);

@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/mediaplayback/MediaPlaybackStatusMessageId.pb.h>
 #include "Channel/MediaPlaybackStatus/MediaPlaybackStatusService.hpp"
 #include "Channel/MediaPlaybackStatus/IMediaPlaybackStatusServiceEventHandler.hpp"
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define MEDIA_PLAYBACK_STATUS_SERVICE_LOG_ENABLED
+
+#ifndef MEDIA_PLAYBACK_STATUS_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Media Playback Status channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes - such as updating the LCD screen on older Vauxhall/Opel/GM Cars
@@ -35,7 +43,7 @@ namespace aasdk::channel::mediaplaybackstatus {
   }
 
   void MediaPlaybackStatusService::receive(IMediaPlaybackStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] receive()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&MediaPlaybackStatusService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -47,7 +55,7 @@ namespace aasdk::channel::mediaplaybackstatus {
 
   void MediaPlaybackStatusService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                            SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -61,7 +69,7 @@ namespace aasdk::channel::mediaplaybackstatus {
 
   void MediaPlaybackStatusService::messageHandler(messenger::Message::Pointer message,
                                                   IMediaPlaybackStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] messageHandler()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -80,8 +88,7 @@ namespace aasdk::channel::mediaplaybackstatus {
         break;
 
       default:
-        AASDK_LOG(error) << "[MediaPlaybackStatusService] Message Id not Handled: " << messageId.getId() << " : "
-                         << dump(payload);
+        SDK_LOG_ERROR("[MediaPlaybackStatusService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -91,13 +98,13 @@ namespace aasdk::channel::mediaplaybackstatus {
 
   void MediaPlaybackStatusService::handleMetadataUpdate(const common::DataConstBuffer &payload,
                                                         IMediaPlaybackStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] handleMetadataUpdate()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] handleMetadataUpdate()");
     aap_protobuf::service::mediaplayback::message::MediaPlaybackMetadata metadata;
     if (metadata.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onMetadataUpdate(metadata);
     } else {
+      SDK_LOG_ERROR("[MediaPlaybackStatusService] encountered error parsing message.");
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
-      AASDK_LOG(error) << "[MediaPlaybackStatusService] encountered error with message: " << dump(payload);
     }
 
   }
@@ -105,20 +112,20 @@ namespace aasdk::channel::mediaplaybackstatus {
 
   void MediaPlaybackStatusService::handlePlaybackUpdate(const common::DataConstBuffer &payload,
                                                         IMediaPlaybackStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] handlePlaybackUpdate()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] handlePlaybackUpdate()");
     aap_protobuf::service::mediaplayback::message::MediaPlaybackStatus playback;
     if (playback.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onPlaybackUpdate(playback);
     } else {
+      SDK_LOG_ERROR("[MediaPlaybackStatusService] encountered error parsing message.");
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
-      AASDK_LOG(error) << "[MediaPlaybackStatusService] encountered error with message: " << dump(payload);
     }
 
   }
 
   void MediaPlaybackStatusService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                             IMediaPlaybackStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaPlaybackStatusService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[MediaPlaybackStatusService] handleChannelOpenRequest()");
 
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {

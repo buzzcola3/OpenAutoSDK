@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/bluetooth/BluetoothMessageId.pb.h>
 #include "Channel/Bluetooth/IBluetoothServiceEventHandler.hpp"
 #include "Channel/Bluetooth/BluetoothService.hpp"
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define BLUETOOTH_SERVICE_LOG_ENABLED
+
+#ifndef BLUETOOTH_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 namespace aasdk::channel::bluetooth {
 
@@ -31,7 +39,7 @@ namespace aasdk::channel::bluetooth {
   }
 
   void BluetoothService::receive(IBluetoothServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[BluetoothService] receive()";
+    SDK_LOG_DEBUG("[BluetoothService] receive()");
 
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
@@ -44,7 +52,7 @@ namespace aasdk::channel::bluetooth {
 
   void BluetoothService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                  SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[BluetoothService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[BluetoothService] sendChannelOpenResponse()");
 
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
@@ -59,7 +67,7 @@ namespace aasdk::channel::bluetooth {
   void BluetoothService::sendBluetoothPairingResponse(
       const aap_protobuf::service::bluetooth::message::BluetoothPairingResponse &response,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[BluetoothService] sendBluetoothPairingResponse()";
+    SDK_LOG_DEBUG("[BluetoothService] sendBluetoothPairingResponse()");
 
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
@@ -75,7 +83,7 @@ namespace aasdk::channel::bluetooth {
       const aap_protobuf::service::bluetooth::message::BluetoothAuthenticationData &response,
       SendPromise::Pointer promise) {
 
-    AASDK_LOG(debug) << "[BluetoothService] sendBluetoothAuthenticationData()";
+    SDK_LOG_DEBUG("[BluetoothService] sendBluetoothAuthenticationData()");
 
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
@@ -89,7 +97,7 @@ namespace aasdk::channel::bluetooth {
 
   void BluetoothService::messageHandler(messenger::Message::Pointer message,
                                         IBluetoothServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[BluetoothService] messageHandler()";
+    SDK_LOG_DEBUG("[BluetoothService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -105,7 +113,7 @@ namespace aasdk::channel::bluetooth {
         this->handleBluetoothAuthenticationResult(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[BluetoothService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[BluetoothService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -113,7 +121,7 @@ namespace aasdk::channel::bluetooth {
 
   void BluetoothService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                   IBluetoothServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[BluetoothService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[BluetoothService] handleChannelOpenRequest()");
 
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
@@ -125,7 +133,7 @@ namespace aasdk::channel::bluetooth {
 
   void BluetoothService::handleBluetoothAuthenticationResult(const common::DataConstBuffer &payload,
                                                                   IBluetoothServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[BluetoothService] handleBluetoothAuthenticationResult()";
+    SDK_LOG_DEBUG("[BluetoothService] handleBluetoothAuthenticationResult()");
 
     aap_protobuf::service::bluetooth::message::BluetoothAuthenticationResult request;
 
@@ -138,7 +146,7 @@ namespace aasdk::channel::bluetooth {
 
   void BluetoothService::handleBluetoothPairingRequest(const common::DataConstBuffer &payload,
                                                        IBluetoothServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[BluetoothService] handleBluetoothPairingRequest()";
+    SDK_LOG_DEBUG("[BluetoothService] handleBluetoothPairingRequest()");
 
     aap_protobuf::service::bluetooth::message::BluetoothPairingRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {

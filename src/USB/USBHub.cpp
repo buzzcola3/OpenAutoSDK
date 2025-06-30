@@ -20,7 +20,15 @@
 #include <USB/USBHub.hpp>
 #include <USB/AccessoryModeQueryChain.hpp>
 #include <Error/Error.hpp>
-#include <Common/Log.hpp>
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define USB_HUB_LOG_ENABLED
+
+#ifndef USB_HUB_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 
 namespace aasdk {
@@ -76,7 +84,7 @@ namespace aasdk {
       if (event == LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
         auto self = reinterpret_cast<USBHub *>(userData)->shared_from_this();
         boost::asio::dispatch(self->strand_, std::bind(&USBHub::handleDevice, self, device));
-        AASDK_LOG(debug) << "[USBHub] hotplugEventsHandler()";
+        SDK_LOG_DEBUG("[USBHub] hotplugEventsHandler()");
       }
 
       return 0;
@@ -98,13 +106,13 @@ namespace aasdk {
 
     void USBHub::attemptToHandleDevice(libusb_device* device, int retriesLeft) {
       if (retriesLeft <= 0) {
-        AASDK_LOG(error) << "[USBHub] Failed to open device after multiple retries.";
+        SDK_LOG_ERROR("[USBHub] Failed to open device after multiple retries.");
         return;
       }
 
       libusb_device_descriptor deviceDescriptor;
       if (usbWrapper_.getDeviceDescriptor(device, deviceDescriptor) != 0) {
-        AASDK_LOG(debug) << "[USBHub] Failed to get device descriptor. Retries left: " << (retriesLeft - 1);
+        SDK_LOG_DEBUG("[USBHub] Failed to get device descriptor. Retries left: ", (retriesLeft - 1));
         retryTimer_.expires_after(std::chrono::milliseconds(200));
         retryTimer_.async_wait(boost::asio::bind_executor(strand_, [this, self = this->shared_from_this(), device, retriesLeft](const boost::system::error_code& /*ec*/) {
             attemptToHandleDevice(device, retriesLeft - 1);
@@ -115,7 +123,7 @@ namespace aasdk {
       DeviceHandle handle;
       auto openResult = usbWrapper_.open(device, handle);
       if (openResult != 0) {
-        AASDK_LOG(debug) << "[USBHub] Failed to open device. Retries left: " << (retriesLeft - 1);
+        SDK_LOG_DEBUG("[USBHub] Failed to open device. Retries left: ", (retriesLeft - 1));
         retryTimer_.expires_after(std::chrono::milliseconds(200));
         retryTimer_.async_wait(boost::asio::bind_executor(strand_, [this, self = this->shared_from_this(), device, retriesLeft](const boost::system::error_code& /*ec*/) {
             attemptToHandleDevice(device, retriesLeft - 1);
@@ -123,7 +131,7 @@ namespace aasdk {
         return;
       }
 
-      AASDK_LOG(debug) << "[USBHub] handleDevice() - Device opened successfully.";
+      SDK_LOG_DEBUG("[USBHub] handleDevice() - Device opened successfully.");
 
       if (this->isAOAPDevice(deviceDescriptor)) {
         hotplugPromise_->resolve(std::move(handle));

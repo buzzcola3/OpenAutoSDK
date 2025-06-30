@@ -21,7 +21,7 @@
 #include <openssl/ssl.h>
 #include <openssl/conf.h>
 #include <Transport/SSLWrapper.hpp>
-#include <Common/Log.hpp>
+#include "Debug_cfg.hpp"
 
 namespace aasdk {
   namespace transport {
@@ -160,7 +160,7 @@ namespace aasdk {
 
     int SSLWrapper::getError(SSL *ssl, int returnCode) {
       while (auto err = ERR_get_error()) {
-        AASDK_LOG(error) << "[SSLWrapper] SSL Error " << ERR_error_string(err, NULL);
+        SDK_LOG_ERROR("[SSLWrapper] SSL Error ", ERR_error_string(err, NULL));
       }
       return SSL_get_error(ssl, returnCode);
     }

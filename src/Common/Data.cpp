@@ -17,7 +17,6 @@
 
 #include <boost/algorithm/hex.hpp>
 #include <Common/Data.hpp>
-#include <Common/Log.hpp>
 #include <string>
 #include <sstream>
 #include <iomanip>

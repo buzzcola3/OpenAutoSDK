@@ -27,7 +27,19 @@ namespace aasdk::messenger {
   }
 
   Timestamp::Timestamp(const common::DataConstBuffer &buffer) {
-    const ValueType &timestampBig = reinterpret_cast<const ValueType &>(buffer.cdata[0]);
+    // Safe implementation with proper alignment handling
+    ValueType timestampBig = 0;
+
+    // Copy bytes safely, handling any alignment
+    if(buffer.size >= sizeof(ValueType)) {
+      std::memcpy(&timestampBig, buffer.cdata, sizeof(ValueType));
+    }
+    else if(buffer.size > 0) {
+      // Handle partial data (less than full ValueType size)
+      std::memcpy(&timestampBig, buffer.cdata, buffer.size);
+    }
+
+    // Convert from big-endian to native endianness
     stamp_ = boost::endian::big_to_native(timestampBig);
   }
 

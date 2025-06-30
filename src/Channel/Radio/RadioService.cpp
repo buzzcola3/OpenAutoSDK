@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/radio/RadioMessageId.pb.h>
 #include <Channel/Radio/IRadioServiceEventHandler.hpp>
 #include <Channel/Radio/RadioService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define RADIO_SERVICE_LOG_ENABLED
+
+#ifndef RADIO_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Radio channel that could be used for integration onto another Raspberry Pi/Other Device to integrate with third party systems or head units to help control the radio if necessary.
@@ -36,7 +44,7 @@ namespace aasdk::channel::radio {
 
   void RadioService::receive(IRadioServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[RadioService] receive()";
+    SDK_LOG_DEBUG("[RadioService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&RadioService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -48,7 +56,7 @@ namespace aasdk::channel::radio {
 
   void RadioService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                              SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[RadioService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[RadioService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -62,7 +70,7 @@ namespace aasdk::channel::radio {
   void RadioService::messageHandler(messenger::Message::Pointer message,
                                     IRadioServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[RadioService] messageHandler()";
+    SDK_LOG_DEBUG("[RadioService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -97,7 +105,7 @@ namespace aasdk::channel::radio {
       case aap_protobuf::service::radio::RadioMessageId::RADIO_MESSAGE_RADIO_SOURCE_RESPONSE:
       case aap_protobuf::service::radio::RadioMessageId::RADIO_MESSAGE_STATE_NOTIFICATION:
       default:
-        AASDK_LOG(error) << "[RadioService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[RadioService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -105,7 +113,7 @@ namespace aasdk::channel::radio {
 
   void RadioService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                               IRadioServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[RadioService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[RadioService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

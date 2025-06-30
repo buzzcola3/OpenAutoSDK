@@ -18,7 +18,15 @@
 #include <USB/USBEndpoint.hpp>
 #include <USB/IUSBWrapper.hpp>
 #include <Error/Error.hpp>
-#include <Common/Log.hpp>
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define USB_ENDPOINT_LOG_ENABLED
+
+#ifndef USB_ENDPOINT_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 namespace aasdk {
   namespace usb {
@@ -68,10 +76,10 @@ namespace aasdk {
       } else {
         auto *transfer = usbWrapper_.allocTransfer(0);
         if (transfer == nullptr) {
-          AASDK_LOG(debug) << "[USBEndpoint] Rejecting Promise " << endpointAddress_ << " size " << buffer.size;
+          SDK_LOG_DEBUG("[USBEndpoint] Rejecting Promise ", static_cast<int>(endpointAddress_), " size ", buffer.size);
           promise->reject(error::Error(error::ErrorCode::USB_TRANSFER_ALLOCATION));
         } else {
-          AASDK_LOG(debug) << "[USBEndpoint] Fill Bulk Transfer " << endpointAddress_ << " size " << buffer.size;
+          SDK_LOG_DEBUG("[USBEndpoint] Fill Bulk Transfer ", static_cast<int>(endpointAddress_), " size ", buffer.size);
           usbWrapper_.fillBulkTransfer(transfer, handle_, endpointAddress_, buffer.data, buffer.size,
                                        reinterpret_cast<libusb_transfer_cb_fn>(&USBEndpoint::transferHandler), this,
                                        timeout);
@@ -92,7 +100,7 @@ namespace aasdk {
 
           transfers_.insert(std::make_pair(transfer, std::move(promise)));
         } else {
-          AASDK_LOG(debug) << "[USBEndpoint] USB Failure " << submitResult;
+          SDK_LOG_DEBUG("[USBEndpoint] USB Failure ", submitResult);
           promise->reject(error::Error(error::ErrorCode::USB_TRANSFER, submitResult));
           usbWrapper_.freeTransfer(transfer);
         }
@@ -116,22 +124,22 @@ namespace aasdk {
     }
 
     void USBEndpoint::transferHandler(libusb_transfer *transfer) {
-      AASDK_LOG(debug) << "[USBEndpoint] transferHandler()";
+      SDK_LOG_DEBUG("[USBEndpoint] transferHandler()");
       auto self = reinterpret_cast<USBEndpoint *>(transfer->user_data)->shared_from_this();
 
       boost::asio::dispatch(self->strand_, [self, transfer]() mutable {
         if (self->transfers_.count(transfer) == 0) {
-          AASDK_LOG(debug) << "[USBEndpoint] No more transfers.";
+          SDK_LOG_DEBUG("[USBEndpoint] No more transfers.");
           return;
         }
 
         auto promise(std::move(self->transfers_.at(transfer)));
 
         if (transfer->status == LIBUSB_TRANSFER_COMPLETED) {
-          AASDK_LOG(debug) << "[Transport] Transfer Complete.";
+          SDK_LOG_DEBUG("[USBEndpoint] Transfer Complete.");
           promise->resolve(transfer->actual_length);
         } else {
-          AASDK_LOG(debug) << "[Transport] Transfer Cancelled.";
+          SDK_LOG_DEBUG("[USBEndpoint] Transfer Cancelled.");
           auto error = transfer->status ==
               LIBUSB_TRANSFER_CANCELLED ? error::Error(error::ErrorCode::OPERATION_ABORTED)
                                                                      : error::Error(error::ErrorCode::USB_TRANSFER,

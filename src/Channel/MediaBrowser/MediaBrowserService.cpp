@@ -1,4 +1,3 @@
-
 // This file is part of aasdk library project.
 // Copyright (C) 2018 f1x.studio (Michal Szwaj)
 // Copyright (C) 2024 CubeOne (Simon Dean - simon.dean@cubeone.co.uk)
@@ -19,7 +18,15 @@
 #include <aap_protobuf/service/mediabrowser/MediaBrowserMessageId.pb.h>
 #include <Channel/MediaBrowser/IMediaBrowserServiceEventHandler.hpp>
 #include <Channel/MediaBrowser/MediaBrowserService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define MEDIA_BROWSER_SERVICE_LOG_ENABLED
+
+#ifndef MEDIA_BROWSER_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Media Browser channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes - such as updating the LCD screen on older Vauxhall/Opel/GM Cars
@@ -37,7 +44,7 @@ namespace aasdk::channel::mediabrowser {
 
   void MediaBrowserService::receive(IMediaBrowserServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[MediaBrowserService] receive()";
+    SDK_LOG_DEBUG("[MediaBrowserService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&MediaBrowserService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -49,7 +56,7 @@ namespace aasdk::channel::mediabrowser {
 
   void MediaBrowserService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                     SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[MediaBrowserService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[MediaBrowserService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -62,7 +69,7 @@ namespace aasdk::channel::mediabrowser {
 
   void MediaBrowserService::messageHandler(messenger::Message::Pointer message,
                                            IMediaBrowserServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaBrowserService] messageHandler()";
+    SDK_LOG_DEBUG("[MediaBrowserService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -77,7 +84,7 @@ namespace aasdk::channel::mediabrowser {
       case aap_protobuf::service::mediabrowser::MediaBrowserMessageId::MEDIA_GET_NODE:
       case aap_protobuf::service::mediabrowser::MediaBrowserMessageId::MEDIA_BROWSE_INPUT:
       default:
-        AASDK_LOG(error) << "[MediaBrowserService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[MediaBrowserService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -85,7 +92,7 @@ namespace aasdk::channel::mediabrowser {
 
   void MediaBrowserService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                      IMediaBrowserServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[MediaBrowserService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[MediaBrowserService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

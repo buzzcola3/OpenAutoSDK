@@ -18,8 +18,15 @@
 #include <aap_protobuf/service/inputsource/InputMessageId.pb.h>
 #include "Channel/InputSource/InputSourceService.hpp"
 #include "Channel/InputSource/IInputSourceServiceEventHandler.hpp"
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
 
+// To enable logging in this file, uncomment the following line
+// #define INPUT_SOURCE_SERVICE_LOG_ENABLED
+
+#ifndef INPUT_SOURCE_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 namespace aasdk::channel::inputsource {
 
@@ -32,7 +39,7 @@ namespace aasdk::channel::inputsource {
   }
 
   void InputSourceService::receive(IInputSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[InputSourceService] receive()";
+    SDK_LOG_DEBUG("[InputSourceService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&InputSourceService::messageHandler, this->shared_from_this(), std::placeholders::_1, eventHandler),
@@ -45,7 +52,7 @@ namespace aasdk::channel::inputsource {
   InputSourceService::sendInputReport(
       const aap_protobuf::service::inputsource::message::InputReport &indication,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[InputSourceService] sendInputReport()";
+    SDK_LOG_DEBUG("[InputSourceService] sendInputReport()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(messenger::MessageId(
@@ -58,7 +65,7 @@ namespace aasdk::channel::inputsource {
   void
   InputSourceService::sendKeyBindingResponse(const aap_protobuf::service::media::sink::message::KeyBindingResponse &response,
                                           SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[InputSourceService] sendKeyBindingResponse()";
+    SDK_LOG_DEBUG("[InputSourceService] sendKeyBindingResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(messenger::MessageId(
@@ -70,7 +77,7 @@ namespace aasdk::channel::inputsource {
 
   void InputSourceService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                    SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[InputSourceService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[InputSourceService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -83,7 +90,7 @@ namespace aasdk::channel::inputsource {
 
   void InputSourceService::messageHandler(messenger::Message::Pointer message,
                                           IInputSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[InputSourceService] messageHandler()";
+    SDK_LOG_DEBUG("[InputSourceService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -96,7 +103,7 @@ namespace aasdk::channel::inputsource {
         this->handleChannelOpenRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[InputSourceService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[InputSourceService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -104,7 +111,7 @@ namespace aasdk::channel::inputsource {
 
   void InputSourceService::handleKeyBindingRequest(const common::DataConstBuffer &payload,
                                                 IInputSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[InputSourceService] handleKeyBindingRequest()";
+    SDK_LOG_DEBUG("[InputSourceService] handleKeyBindingRequest()");
     aap_protobuf::service::media::sink::message::KeyBindingRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onKeyBindingRequest(request);
@@ -115,7 +122,7 @@ namespace aasdk::channel::inputsource {
 
   void InputSourceService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                     IInputSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[InputSourceService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[InputSourceService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

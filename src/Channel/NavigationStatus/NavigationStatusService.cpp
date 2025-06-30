@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/navigationstatus//NavigationStatusMessageId.pb.h>
 #include "Channel/NavigationStatus/INavigationStatusServiceEventHandler.hpp"
 #include "Channel/NavigationStatus/NavigationStatusService.hpp"
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define NAVIGATION_STATUS_LOG_ENABLED
+
+#ifndef NAVIGATION_STATUS_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Navigation Status channel that could be used for integration onto another Raspberry Pi/Other Device to add an additional screen for notification and control purposes - such as updating the LCD screen on older Vauxhall/Opel/GM Cars
@@ -35,7 +43,7 @@ namespace aasdk::channel::navigationstatus {
   }
 
   void NavigationStatusService::receive(INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] receive()";
+    SDK_LOG_DEBUG("[NavigationStatusService] receive()");
 
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
@@ -48,7 +56,7 @@ namespace aasdk::channel::navigationstatus {
 
   void NavigationStatusService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                         SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[NavigationStatusService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[NavigationStatusService] sendChannelOpenResponse()");
 
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
@@ -63,7 +71,7 @@ namespace aasdk::channel::navigationstatus {
 
   void NavigationStatusService::messageHandler(messenger::Message::Pointer message,
                                                INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] messageHandler()";
+    SDK_LOG_DEBUG("[NavigationStatusService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -82,8 +90,7 @@ namespace aasdk::channel::navigationstatus {
         this->handleDistanceEvent(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[NavigationStatusService] Message Id not Handled: " << messageId.getId() << " : "
-                         << dump(payload);
+        SDK_LOG_ERROR("[NavigationStatusService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -91,7 +98,7 @@ namespace aasdk::channel::navigationstatus {
 
   void NavigationStatusService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                          INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[NavigationStatusService] handleChannelOpenRequest()");
 
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
@@ -103,39 +110,39 @@ namespace aasdk::channel::navigationstatus {
 
   void NavigationStatusService::handleStatusUpdate(const common::DataConstBuffer &payload,
                                                    INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] handleStatusUpdate()";
+    SDK_LOG_DEBUG("[NavigationStatusService] handleStatusUpdate()");
     aap_protobuf::service::navigationstatus::message::NavigationStatus navStatus;
     if (navStatus.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onStatusUpdate(navStatus);
     } else {
+      SDK_LOG_ERROR("[NavigationStatusService] encountered error parsing message.");
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
-      AASDK_LOG(error) << "[NavigationStatusService] encountered error with message: " << dump(payload);
     }
 
   }
 
   void NavigationStatusService::handleTurnEvent(const common::DataConstBuffer &payload,
                                                 INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] handleTurnEvent()";
+    SDK_LOG_DEBUG("[NavigationStatusService] handleTurnEvent()");
     aap_protobuf::service::navigationstatus::message::NavigationNextTurnEvent turnEvent;
     if (turnEvent.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onTurnEvent(turnEvent);
     } else {
+      SDK_LOG_ERROR("[NavigationStatusService] encountered error parsing message.");
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
-      AASDK_LOG(error) << "[NavigationStatusService] encountered error with message: " << dump(payload);
     }
 
   }
 
   void NavigationStatusService::handleDistanceEvent(const common::DataConstBuffer &payload,
                                                     INavigationStatusServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[NavigationStatusService] handleDistanceEvent()";
+    SDK_LOG_DEBUG("[NavigationStatusService] handleDistanceEvent()");
     aap_protobuf::service::navigationstatus::message::NavigationNextTurnDistanceEvent distanceEvent;
     if (distanceEvent.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onDistanceEvent(distanceEvent);
     } else {
+      SDK_LOG_ERROR("[NavigationStatusService] encountered error parsing message.");
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
-      AASDK_LOG(error) << "[NavigationStatusService] encountered error with message: " << dump(payload);
     }
 
   }

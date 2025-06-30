@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/sensorsource/SensorMessageId.pb.h>
 #include <Channel/SensorSource/ISensorSourceServiceEventHandler.hpp>
 #include <Channel/SensorSource/SensorSourceService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define SENSOR_SOURCE_SERVICE_LOG_ENABLED
+
+#ifndef SENSOR_SOURCE_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 
 namespace aasdk::channel::sensorsource {
@@ -30,7 +38,7 @@ namespace aasdk::channel::sensorsource {
   }
 
   void SensorSourceService::receive(ISensorSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[SensorSourceService] receive()";
+    SDK_LOG_DEBUG("[SensorSourceService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&SensorSourceService::messageHandler, this->shared_from_this(), std::placeholders::_1, eventHandler),
@@ -41,7 +49,7 @@ namespace aasdk::channel::sensorsource {
 
   void SensorSourceService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                               SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[SensorSourceService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[SensorSourceService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -55,7 +63,7 @@ namespace aasdk::channel::sensorsource {
   void
   SensorSourceService::messageHandler(messenger::Message::Pointer message, ISensorSourceServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[SensorSourceService] messageHandler()";
+    SDK_LOG_DEBUG("[SensorSourceService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -68,7 +76,7 @@ namespace aasdk::channel::sensorsource {
         this->handleChannelOpenRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[SensorSourceService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[SensorSourceService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -77,7 +85,7 @@ namespace aasdk::channel::sensorsource {
   void
   SensorSourceService::sendSensorEventIndication(const aap_protobuf::service::sensorsource::message::SensorBatch &indication,
                                            SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[SensorSourceService] sendSensorEventIndication()";
+    SDK_LOG_DEBUG("[SensorSourceService] sendSensorEventIndication()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(
@@ -91,7 +99,7 @@ namespace aasdk::channel::sensorsource {
   SensorSourceService::sendSensorStartResponse(
       const aap_protobuf::service::sensorsource::message::SensorStartResponseMessage &response,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[SensorSourceService] sendSensorStartResponse()";
+    SDK_LOG_DEBUG("[SensorSourceService] sendSensorStartResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(
@@ -103,7 +111,7 @@ namespace aasdk::channel::sensorsource {
 
   void SensorSourceService::handleSensorStartRequest(const common::DataConstBuffer &payload,
                                                ISensorSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[SensorSourceService] handleSensorStartRequest()";
+    SDK_LOG_DEBUG("[SensorSourceService] handleSensorStartRequest()");
     aap_protobuf::service::sensorsource::message::SensorRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onSensorStartRequest(request);
@@ -114,7 +122,7 @@ namespace aasdk::channel::sensorsource {
 
   void SensorSourceService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                ISensorSourceServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[SensorSourceService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[SensorSourceService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

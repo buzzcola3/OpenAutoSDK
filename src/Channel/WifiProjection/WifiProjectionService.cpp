@@ -18,7 +18,15 @@
 #include <aap_protobuf/service/wifiprojection/WifiProjectionMessageId.pb.h>
 #include <Channel/WifiProjection/IWifiProjectionServiceEventHandler.hpp>
 #include <Channel/WifiProjection/WifiProjectionService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define WIFI_PROJECTION_SERVICE_LOG_ENABLED
+
+#ifndef WIFI_PROJECTION_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 
 namespace aasdk::channel::wifiprojection {
@@ -32,7 +40,7 @@ namespace aasdk::channel::wifiprojection {
 
   void WifiProjectionService::receive(IWifiProjectionServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[WifiProjectionService] receive()";
+    SDK_LOG_DEBUG("[WifiProjectionService] receive()");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&WifiProjectionService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -44,7 +52,7 @@ namespace aasdk::channel::wifiprojection {
 
   void WifiProjectionService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[WifiProjectionService] sendChannelOpenResponse()";
+    SDK_LOG_DEBUG("[WifiProjectionService] sendChannelOpenResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -58,7 +66,7 @@ namespace aasdk::channel::wifiprojection {
   void WifiProjectionService::sendWifiCredentialsResponse(
       const aap_protobuf::service::wifiprojection::message::WifiCredentialsResponse &response,
       SendPromise::Pointer promise) {
-    AASDK_LOG(debug) << "[WifiProjectionService] sendWifiCredentialsResponse()";
+    SDK_LOG_DEBUG("[WifiProjectionService] sendWifiCredentialsResponse()");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::SPECIFIC));
     message->insertPayload(messenger::MessageId(
@@ -71,7 +79,7 @@ namespace aasdk::channel::wifiprojection {
   void WifiProjectionService::messageHandler(messenger::Message::Pointer message,
                                              IWifiProjectionServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[WifiProjectionService] messageHandler()";
+    SDK_LOG_DEBUG("[WifiProjectionService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -84,7 +92,7 @@ namespace aasdk::channel::wifiprojection {
         this->handleWifiCredentialsRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[WifiProjectionService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[WifiProjectionService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -92,7 +100,7 @@ namespace aasdk::channel::wifiprojection {
 
   void WifiProjectionService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                        IWifiProjectionServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[WifiProjectionService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[WifiProjectionService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);
@@ -103,7 +111,7 @@ namespace aasdk::channel::wifiprojection {
 
   void WifiProjectionService::handleWifiCredentialsRequest(const common::DataConstBuffer &payload,
                                                            IWifiProjectionServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[WifiProjectionService] handleWifiCredentialsRequest()";
+    SDK_LOG_DEBUG("[WifiProjectionService] handleWifiCredentialsRequest()");
 
     aap_protobuf::service::wifiprojection::message::WifiCredentialsRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {

@@ -17,7 +17,15 @@
 
 #include <Channel/GenericNotification/IGenericNotificationServiceEventHandler.hpp>
 #include <Channel/GenericNotification/GenericNotificationService.hpp>
-#include "Common/Log.hpp"
+#include "Debug_cfg.hpp"
+
+// To enable logging in this file, uncomment the following line
+// #define GENERIC_NOTIFICATION_SERVICE_LOG_ENABLED
+
+#ifndef GENERIC_NOTIFICATION_SERVICE_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
+#endif
 
 /*
  * This is a Generic Notification channel - not much is known at this point.
@@ -37,7 +45,7 @@ namespace aasdk::channel::genericnotification {
 
   void GenericNotificationService::receive(IGenericNotificationServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[GenericNotificationService] Receive";
+    SDK_LOG_DEBUG("[GenericNotificationService] Receive");
     auto receivePromise = messenger::ReceivePromise::defer(strand_);
     receivePromise->then(
         std::bind(&GenericNotificationService::messageHandler, this->shared_from_this(), std::placeholders::_1,
@@ -49,6 +57,7 @@ namespace aasdk::channel::genericnotification {
 
   void GenericNotificationService::sendChannelOpenResponse(const aap_protobuf::service::control::message::ChannelOpenResponse &response,
                                                            SendPromise::Pointer promise) {
+    SDK_LOG_DEBUG("[GenericNotificationService] sendChannelOpenResponse");
     auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
                                                       messenger::MessageType::CONTROL));
     message->insertPayload(
@@ -62,7 +71,7 @@ namespace aasdk::channel::genericnotification {
   void GenericNotificationService::messageHandler(messenger::Message::Pointer message,
                                                   IGenericNotificationServiceEventHandler::Pointer eventHandler) {
 
-    AASDK_LOG(debug) << "[GenericNotificationService] messageHandler()";
+    SDK_LOG_DEBUG("[GenericNotificationService] messageHandler()");
 
     messenger::MessageId messageId(message->getPayload());
     common::DataConstBuffer payload(message->getPayload(), messageId.getSizeOf());
@@ -72,7 +81,7 @@ namespace aasdk::channel::genericnotification {
         this->handleChannelOpenRequest(payload, std::move(eventHandler));
         break;
       default:
-        AASDK_LOG(error) << "[GenericNotificationService] Message Id not Handled: " << messageId.getId();
+        SDK_LOG_ERROR("[GenericNotificationService] Message Id not Handled: ", messageId.getId());
         this->receive(std::move(eventHandler));
         break;
     }
@@ -80,7 +89,7 @@ namespace aasdk::channel::genericnotification {
 
   void GenericNotificationService::handleChannelOpenRequest(const common::DataConstBuffer &payload,
                                                             IGenericNotificationServiceEventHandler::Pointer eventHandler) {
-    AASDK_LOG(debug) << "[GenericNotificationService] handleChannelOpenRequest()";
+    SDK_LOG_DEBUG("[GenericNotificationService] handleChannelOpenRequest()");
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
       eventHandler->onChannelOpenRequest(request);

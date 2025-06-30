@@ -15,16 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
-#include <Common/Log.hpp>
 #include <Transport/Transport.hpp>
+#include "Debug_cfg.hpp"
 
-// Uncomment the line below to enable detailed debug logging for this service
-// #define OAE_TRANSPORT_DEBUG
+// To disable logging in this file, comment out the following line
+// #define TRANSPORT_LOG_ENABLED
 
-#ifdef OAE_TRANSPORT_DEBUG
-#define TRANSPORT_LOG_DEBUG(x) AASDK_LOG(debug) << "[Transport] " << x
-#else
-#define TRANSPORT_LOG_DEBUG(x) do {} while (0)
+#ifndef TRANSPORT_LOG_ENABLED
+#undef SDK_LOG_DEBUG
+#define SDK_LOG_DEBUG(...)
 #endif
 
 
@@ -35,18 +34,18 @@ namespace aasdk {
         : receiveStrand_(ioContext.get_executor()), sendStrand_(ioContext.get_executor()) {}
 
     void Transport::receive(size_t size, ReceivePromise::Pointer promise) {
-      TRANSPORT_LOG_DEBUG("receive()");
+      SDK_LOG_DEBUG("receive()");
       boost::asio::dispatch(receiveStrand_, [this, self = this->shared_from_this(), size, promise = std::move(promise)]() mutable {
         receiveQueue_.emplace_back(std::make_pair(size, std::move(promise)));
 
         if (receiveQueue_.size() == 1) {
           try {
-            TRANSPORT_LOG_DEBUG("Distribute received data.");
+            SDK_LOG_DEBUG("Distribute received data.");
             this->distributeReceivedData();
           }
           catch (const error::Error &e) {
             // Due to the design of the messaging system, we don't really need to raise an error - debug it is
-            TRANSPORT_LOG_DEBUG("Reject receive promise.");
+            SDK_LOG_DEBUG("Reject receive promise.");
             this->rejectReceivePromises(e);
           }
         }
@@ -55,29 +54,29 @@ namespace aasdk {
 
     void Transport::receiveHandler(size_t bytesTransferred) {
       try {
-        TRANSPORT_LOG_DEBUG("receiveHandler()");
+        SDK_LOG_DEBUG("receiveHandler()");
         receivedDataSink_.commit(bytesTransferred);
         this->distributeReceivedData();
       }
       catch (const error::Error &e) {
         // Due to the design of the messaging system, we don't really need to raise an error - debug it is
-        TRANSPORT_LOG_DEBUG("Rejecting promise.");
+        SDK_LOG_DEBUG("Rejecting promise.");
         this->rejectReceivePromises(e);
       }
     }
 
     void Transport::distributeReceivedData() {
-      TRANSPORT_LOG_DEBUG("distributeReceivedData()");
+      SDK_LOG_DEBUG("distributeReceivedData()");
       for (auto queueElement = receiveQueue_.begin(); queueElement != receiveQueue_.end();) {
         if (receivedDataSink_.getAvailableSize() < queueElement->first) {
-          TRANSPORT_LOG_DEBUG("Receiving from buffer.");
+          SDK_LOG_DEBUG("Receiving from buffer.");
           auto buffer = receivedDataSink_.fill();
           this->enqueueReceive(std::move(buffer));
 
           break;
         } else {
           auto data(receivedDataSink_.consume(queueElement->first));
-          TRANSPORT_LOG_DEBUG("Resolve and clear message.");
+          SDK_LOG_DEBUG("Resolve and clear message.");
           queueElement->second->resolve(std::move(data));
           queueElement = receiveQueue_.erase(queueElement);
         }
