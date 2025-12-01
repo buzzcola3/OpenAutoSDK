@@ -158,6 +158,15 @@ namespace aasdk {
           const aap_protobuf::service::control::message::VoiceSessionNotification &response,
           SendPromise::Pointer promise) {
         SDK_LOG_DEBUG("[ControlServiceChannel] sendVoiceSessionFocusResponse()");
+        auto message(std::make_shared<messenger::Message>(channelId_, messenger::EncryptionType::ENCRYPTED,
+                                                          messenger::MessageType::SPECIFIC));
+        message->insertPayload(
+            messenger::MessageId(
+                aap_protobuf::service::control::message::ControlMessageType::MESSAGE_VOICE_SESSION_NOTIFICATION)
+                .getData());
+        message->insertPayload(response);
+
+        this->send(std::move(message), std::move(promise));
       }
 
       void ControlServiceChannel::sendPingResponse(const aap_protobuf::service::control::message::PingResponse &request,

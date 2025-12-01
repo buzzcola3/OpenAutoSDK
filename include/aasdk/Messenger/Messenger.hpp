@@ -18,6 +18,9 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <atomic>
+#include <cstddef>
+#include <deque>
 #include <list>
 #include <Messenger/IMessenger.hpp>
 #include <Messenger/IMessageInStream.hpp>
@@ -55,6 +58,7 @@ namespace aasdk {
       void rejectReceivePromiseQueue(const error::Error &e);
 
       void rejectSendPromiseQueue(const error::Error &e);
+      void UpdateQueueMonitor();
 
       Strand receiveStrand_;
       Strand sendStrand_;
@@ -64,6 +68,10 @@ namespace aasdk {
       ChannelReceivePromiseQueue channelReceivePromiseQueue_;
       ChannelReceiveMessageQueue channelReceiveMessageQueue_;
       ChannelSendQueue channelSendPromiseQueue_;
+      std::size_t pendingReceivePromiseCount_ = 0;
+      std::size_t pendingReceiveMessageCount_ = 0;
+      std::atomic<std::size_t> pendingSendCount_{0};
+      std::deque<ChannelId> pendingSendChannelOrder_;
 
     };
 
