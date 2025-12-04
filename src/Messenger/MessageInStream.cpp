@@ -156,8 +156,20 @@ namespace aasdk::messenger {
     // If this is the LAST frame or a BULK frame...
     if ((thisFrameType_ == FrameType::BULK || thisFrameType_ == FrameType::LAST) && isValidFrame_) {
       SDK_LOG_DEBUG("[MessageInStream] Resolving message.");
-      promise_->resolve(std::move(message_));
-      promise_.reset();
+
+      auto fallback = [this](Message::Pointer resolvedMessage) mutable {
+        if (promise_ != nullptr) {
+          promise_->resolve(std::move(resolvedMessage));
+          promise_.reset();
+        }
+      };
+
+      if (!messageResolver_.resolve(message_, fallback)) {
+        fallback(std::move(message_));
+      } else {
+        message_.reset();
+      }
+
       isResolved = true;
 
     } else {
