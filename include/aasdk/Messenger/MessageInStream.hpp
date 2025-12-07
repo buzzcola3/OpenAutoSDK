@@ -24,6 +24,8 @@
 #include <Messenger/FrameHeader.hpp>
 #include <Messenger/FrameSize.hpp>
 #include <Messenger/FrameType.hpp>
+#include <Messenger/Message.hpp>
+#include <Messenger/MessageInStreamInterceptor.hpp>
 
 
 namespace aasdk {
@@ -45,6 +47,8 @@ namespace aasdk {
       void receiveFrameSizeHandler(const common::DataConstBuffer &buffer);
 
       void receiveFramePayloadHandler(const common::DataConstBuffer &buffer);
+
+      bool invokeInterceptor(const Message &message);
 
       boost::asio::io_service::strand strand_;
       transport::ITransport::Pointer transport_;

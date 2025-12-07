@@ -15,10 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
+#include <boost/asio/io_service.hpp>
 #include <Messenger/MessageInStream.hpp>
+#include <Messenger/MessageInStreamInterceptor.hpp>
 #include <Error/Error.hpp>
 #include <Common/Log.hpp>
-#include <iostream>
 
 
 namespace aasdk::messenger {
@@ -146,10 +147,16 @@ namespace aasdk::messenger {
 
     // If this is the LAST frame or a BULK frame...
     if ((thisFrameType_ == FrameType::BULK || thisFrameType_ == FrameType::LAST) && isValidFrame_) {
-      AASDK_LOG(debug) << "[MessageInStream] Resolving message.";
-      promise_->resolve(std::move(message_));
-      promise_.reset();
-      isResolved = true;
+      const bool handled = this->invokeInterceptor(*message_);
+
+      if (!handled) {
+        AASDK_LOG(debug) << "[MessageInStream] Resolving message.";
+        promise_->resolve(std::move(message_));
+        promise_.reset();
+        isResolved = true;
+      } else {
+        message_.reset();
+      }
 
     } else {
       // First or Middle message, we'll store in our buffer...
@@ -172,6 +179,10 @@ namespace aasdk::messenger {
 
       transport_->receive(FrameHeader::getSizeOf(), std::move(transportPromise));
     }
+  }
+
+  bool MessageInStream::invokeInterceptor(const Message &message) {
+    return interceptor::handleMessage(message);
   }
 
 }
