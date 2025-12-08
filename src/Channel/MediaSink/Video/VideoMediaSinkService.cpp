@@ -171,6 +171,8 @@ namespace aasdk::channel::mediasink::video {
     AASDK_LOG(debug) << "[VideoMediaSinkService] handleChannelOpenRequest()";
     aap_protobuf::service::control::message::ChannelOpenRequest request;
     if (request.ParseFromArray(payload.cdata, payload.size)) {
+      AASDK_LOG(debug) << "[VideoMediaSinkService] ChannelOpenRequest: "
+                       << request.ShortDebugString();
       eventHandler->onChannelOpenRequest(request);
     } else {
       eventHandler->onChannelError(error::Error(error::ErrorCode::PARSE_PAYLOAD));
