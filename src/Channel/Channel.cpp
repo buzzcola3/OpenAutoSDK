@@ -17,13 +17,23 @@
 
 #include "IO/PromiseLink.hpp"
 #include "Channel/Channel.hpp"
+#include "Messenger/MessageSenderLocator.hpp"
+#include "Messenger/MessageSender.hpp"
 
 namespace aasdk::channel {
   Channel::Channel(boost::asio::io_service::strand &strand,
                    messenger::IMessenger::Pointer messenger,
                    messenger::ChannelId channelId)
       : strand_(strand), messenger_(std::move(messenger)), channelId_(channelId) {
+    if (auto sender = messenger::MessageSenderLocator::get()) {
+      sender->registerChannel(*this);
+    }
+  }
 
+  Channel::~Channel() {
+    if (auto sender = messenger::MessageSenderLocator::get()) {
+      sender->unregisterChannel(channelId_);
+    }
   }
 
   messenger::ChannelId Channel::getId() const {

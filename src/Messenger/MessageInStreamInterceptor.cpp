@@ -3,14 +3,18 @@
 
 #include <Messenger/MessageInStreamInterceptor.hpp>
 #include <Messenger/MediaSinkVideoMessageHandlers.hpp>
+#include <Messenger/MessageSender.hpp>
+#include <Messenger/MessageSenderLocator.hpp>
 #include <Messenger/Message.hpp>
 #include <Messenger/ChannelId.hpp>
+#include <memory>
+#include <utility>
 
 namespace aasdk::messenger::interceptor {
 
 namespace {
 
-const MediaSinkVideoMessageHandlers MEDIA_SINK_VIDEO_HANDLERS;
+MediaSinkVideoMessageHandlers MEDIA_SINK_VIDEO_HANDLERS;
 
 }
 
@@ -21,6 +25,11 @@ bool handleMessage(const ::aasdk::messenger::Message& message) {
     default:
       return false;
   }
+}
+
+void setMessageSender(std::shared_ptr<::aasdk::messenger::MessageSender> sender) {
+  MessageSenderLocator::set(sender);
+  MEDIA_SINK_VIDEO_HANDLERS.setMessageSender(std::move(sender));
 }
 
 }

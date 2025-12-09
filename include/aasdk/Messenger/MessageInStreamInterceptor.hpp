@@ -6,13 +6,16 @@
 
 #pragma once
 
+#include <memory>
 
 namespace aasdk::messenger {
 	class Message;
+	class MessageSender;
 }
 
 namespace aasdk::messenger::interceptor {
 
 bool handleMessage(const ::aasdk::messenger::Message& message);
+void setMessageSender(std::shared_ptr<::aasdk::messenger::MessageSender> sender);
 
 }

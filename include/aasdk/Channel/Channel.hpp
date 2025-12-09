@@ -31,7 +31,7 @@ namespace aasdk {
               messenger::IMessenger::Pointer messenger,
               messenger::ChannelId channelId);
 
-      virtual ~Channel() = default;
+            virtual ~Channel();
 
       messenger::ChannelId getId() const override;
 

@@ -2,10 +2,13 @@
 
 #include <Messenger/Message.hpp>
 #include <Messenger/MessageId.hpp>
+#include <Messenger/MessageSender.hpp>
+#include <Messenger/MessageType.hpp>
 #include <Common/Log.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <utility>
 
 #include <aap_protobuf/service/control/message/ChannelOpenRequest.pb.h>
 #include <aap_protobuf/service/control/ControlMessageType.pb.h>
@@ -59,9 +62,10 @@ bool MediaSinkVideoMessageHandlers::handle(const ::aasdk::messenger::Message& me
   const auto payloadSize = rawPayload.size() - ::aasdk::messenger::MessageId::getSizeOf();
   const auto* payloadData = rawPayload.data() + ::aasdk::messenger::MessageId::getSizeOf();
 
+  bool handled = false;
   switch (messageId.getId()) {
     case Control::MESSAGE_CHANNEL_OPEN_REQUEST:
-      handleChannelOpenRequest(payloadData, payloadSize);
+      handled = handleChannelOpenRequest(message, payloadData, payloadSize);
       break;
     case Media::MEDIA_MESSAGE_SETUP:
       decodeAndLogPayload<aap_protobuf::service::media::shared::message::Setup>(
@@ -93,15 +97,16 @@ bool MediaSinkVideoMessageHandlers::handle(const ::aasdk::messenger::Message& me
       break;
   }
 
-  return false;
+  return handled;
 }
 
-void MediaSinkVideoMessageHandlers::handleChannelOpenRequest(const std::uint8_t* data,
+bool MediaSinkVideoMessageHandlers::handleChannelOpenRequest(const ::aasdk::messenger::Message& message,
+                                                             const std::uint8_t* data,
                                                              std::size_t size) const {
   aap_protobuf::service::control::message::ChannelOpenRequest request;
   if (!request.ParseFromArray(data, static_cast<int>(size))) {
     AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] Failed to parse ChannelOpenRequest payload";
-    return;
+    return false;
   }
 
   AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] ChannelOpenRequest: "
@@ -112,6 +117,23 @@ void MediaSinkVideoMessageHandlers::handleChannelOpenRequest(const std::uint8_t*
 
   AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] Constructed ChannelOpenResponse: "
                    << response.ShortDebugString();
+
+  if (sender_ != nullptr) {
+    sender_->sendProtobuf(message.getChannelId(),
+                          message.getEncryptionType(),
+                          ::aasdk::messenger::MessageType::CONTROL,
+                          Control::MESSAGE_CHANNEL_OPEN_RESPONSE,
+                          response);
+    return true;
+  } else {
+    AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] MessageSender not configured; cannot send response.";
+    return false;
+  }
+}
+
+void MediaSinkVideoMessageHandlers::setMessageSender(
+    std::shared_ptr<::aasdk::messenger::MessageSender> sender) {
+  sender_ = std::move(sender);
 }
 
 }
