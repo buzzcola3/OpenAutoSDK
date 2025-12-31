@@ -4,9 +4,12 @@
 #include <Messenger/MessageId.hpp>
 #include <Messenger/MessageSender.hpp>
 #include <Messenger/MessageType.hpp>
+#include <Messenger/Timestamp.hpp>
 #include <Common/Log.hpp>
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <iomanip>
 #include <limits>
 #include <utility>
 
@@ -19,6 +22,7 @@
 #include <aap_protobuf/service/media/shared/message/Stop.pb.h>
 #include <aap_protobuf/service/media/sink/MediaMessageId.pb.h>
 #include <aap_protobuf/service/media/video/message/VideoFocusRequestNotification.pb.h>
+#include <aap_protobuf/service/media/source/message/Ack.pb.h>
 
 namespace {
 
@@ -49,9 +53,10 @@ void decodeAndLogPayload(const std::uint8_t* data, std::size_t size, const char*
 namespace aasdk::messenger::interceptor {
 
 bool MediaSinkVideoMessageHandlers::handle(const ::aasdk::messenger::Message& message) const {
+  ++messageCount_;
   const auto& rawPayload = message.getPayload();
   AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] media video message received, size="
-                   << rawPayload.size();
+                   << rawPayload.size() << ", total=" << messageCount_;
 
   if (rawPayload.size() <= ::aasdk::messenger::MessageId::getSizeOf()) {
     AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] media video payload too small";
@@ -72,8 +77,15 @@ bool MediaSinkVideoMessageHandlers::handle(const ::aasdk::messenger::Message& me
           payloadData, payloadSize, "MediaSetup");
       break;
     case Media::MEDIA_MESSAGE_START:
-      decodeAndLogPayload<aap_protobuf::service::media::shared::message::Start>(
-          payloadData, payloadSize, "MediaStart");
+      {
+        aap_protobuf::service::media::shared::message::Start start;
+        if (start.ParseFromArray(payloadData, static_cast<int>(payloadSize))) {
+          sessionId_ = start.session_id();
+          AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] MediaStart: session=" << sessionId_;
+        } else {
+          AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] Failed to parse MediaStart payload";
+        }
+      }
       break;
     case Media::MEDIA_MESSAGE_STOP:
       decodeAndLogPayload<aap_protobuf::service::media::shared::message::Stop>(
@@ -84,12 +96,10 @@ bool MediaSinkVideoMessageHandlers::handle(const ::aasdk::messenger::Message& me
           payloadData, payloadSize, "VideoFocusRequest");
       break;
     case Media::MEDIA_MESSAGE_CODEC_CONFIG:
-      AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] codec configuration blob size="
-                       << payloadSize << " bytes";
+      handled = handleCodecConfig(message, payloadData, payloadSize);
       break;
     case Media::MEDIA_MESSAGE_DATA:
-      AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] media data frame size="
-                       << payloadSize << " bytes";
+      handled = handleMediaData(message, payloadData, payloadSize);
       break;
     default:
       AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] media video message id="
@@ -124,11 +134,68 @@ bool MediaSinkVideoMessageHandlers::handleChannelOpenRequest(const ::aasdk::mess
                           ::aasdk::messenger::MessageType::CONTROL,
                           Control::MESSAGE_CHANNEL_OPEN_RESPONSE,
                           response);
-    return true;
+    return false;
   } else {
     AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] MessageSender not configured; cannot send response.";
     return false;
   }
+}
+
+bool MediaSinkVideoMessageHandlers::handleMediaData(const ::aasdk::messenger::Message& message,
+                                                    const std::uint8_t* data,
+                                                    std::size_t size) const {
+  AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] media data frame size=" << size
+                   << " bytes on channel " << channelIdToString(message.getChannelId());
+
+  if (sender_ == nullptr) {
+    AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] MessageSender not configured; cannot send media ACK.";
+    return false;
+  }
+
+  if (sessionId_ < 0) {
+    AASDK_LOG(error) << "[MediaSinkVideoMessageHandlers] Session id not set; cannot send media ACK.";
+    return false;
+  }
+
+  const bool hasTimestamp = size >= sizeof(::aasdk::messenger::Timestamp::ValueType);
+  if (hasTimestamp) {
+    ::aasdk::messenger::Timestamp ts(common::DataConstBuffer(data, size));
+    AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] Detected timestamped media frame, ts=" << ts.getValue();
+  } else {
+    AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] Media frame without timestamp.";
+  }
+
+  aap_protobuf::service::media::source::message::Ack ack;
+  ack.set_session_id(sessionId_);
+  ack.set_ack(1);
+
+  sender_->sendProtobuf(message.getChannelId(),
+                        message.getEncryptionType(),
+                        ::aasdk::messenger::MessageType::SPECIFIC,
+                        aap_protobuf::service::media::sink::MediaMessageId::MEDIA_MESSAGE_ACK,
+                        ack);
+
+  return false; // to see the video data in the app layer, TODO set to true
+}
+
+bool MediaSinkVideoMessageHandlers::handleCodecConfig(const ::aasdk::messenger::Message& message,
+                                                      const std::uint8_t* data,
+                                                      std::size_t size) const {
+  AASDK_LOG(debug) << "[MediaSinkVideoMessageHandlers] codec configuration blob size=" << size
+                   << " bytes on channel " << channelIdToString(message.getChannelId());
+
+  const auto preview = std::min<std::size_t>(size, 64);
+  if (preview > 0) {
+    std::ostringstream oss;
+    oss << "[MediaSinkVideoMessageHandlers] codec config preview (" << preview << "/" << size << " bytes): ";
+    for (size_t i = 0; i < preview; ++i) {
+      oss << std::hex << std::setw(2) << std::setfill('0')
+          << static_cast<unsigned int>(static_cast<unsigned char>(data[i])) << ' ';
+    }
+    AASDK_LOG(debug) << oss.str();
+  }
+
+  return false;
 }
 
 void MediaSinkVideoMessageHandlers::setMessageSender(

@@ -16,8 +16,10 @@
 // along with aasdk. If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/endian/conversion.hpp>
+#include <iomanip>
 #include <IO/PromiseLink.hpp>
 #include <Messenger/MessageOutStream.hpp>
+#include <Common/Log.hpp>
 
 
 namespace aasdk {
@@ -109,6 +111,15 @@ namespace aasdk {
       size_t payloadSize = 0;
 
       if (message_->getEncryptionType() == EncryptionType::ENCRYPTED) {
+        // Log a small preview of plaintext payload before encryption for USB/TCP debugging.
+        const size_t preview = std::min<std::size_t>(payloadBuffer.size, 64);
+        std::ostringstream oss;
+        oss << "[MessageOutStream] plaintext preview (" << preview << "/" << payloadBuffer.size << " bytes): ";
+        for (size_t i = 0; i < preview; ++i) {
+          oss << std::hex << std::setw(2) << std::setfill('0')
+              << static_cast<unsigned int>(static_cast<unsigned char>(payloadBuffer.cdata[i])) << ' ';
+        }
+        AASDK_LOG(debug) << oss.str();
         payloadSize = cryptor_->encrypt(data, payloadBuffer);
       } else {
         data.insert(data.end(), payloadBuffer.cdata, payloadBuffer.cdata + payloadBuffer.size);

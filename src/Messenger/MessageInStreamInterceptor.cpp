@@ -8,6 +8,7 @@
 #include <Messenger/Message.hpp>
 #include <Messenger/ChannelId.hpp>
 #include <memory>
+#include <mutex>
 #include <utility>
 
 namespace aasdk::messenger::interceptor {

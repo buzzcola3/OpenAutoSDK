@@ -21,6 +21,17 @@ private:
                                 const std::uint8_t* data,
                                 std::size_t size) const;
 
+  bool handleMediaData(const ::aasdk::messenger::Message& message,
+                       const std::uint8_t* data,
+                       std::size_t size) const;
+
+  bool handleCodecConfig(const ::aasdk::messenger::Message& message,
+                         const std::uint8_t* data,
+                         std::size_t size) const;
+
+  mutable int32_t sessionId_{-1};
+  mutable std::uint64_t messageCount_{0};
+
   std::shared_ptr<::aasdk::messenger::MessageSender> sender_;
 };
 

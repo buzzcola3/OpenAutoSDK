@@ -188,6 +188,11 @@ target_link_libraries(aasdk PUBLIC
   ${WINSOCK2_LIBRARIES}
 )
 
+install(TARGETS aasdk
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin)
+
 include_directories(
         ${Boost_INCLUDE_DIRS}
         ${PROTOBUF_INCLUDE_DIR}
